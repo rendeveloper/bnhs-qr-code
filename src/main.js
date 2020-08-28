@@ -7,13 +7,14 @@ import initialize from './initialize'
 
 import VueAwesome from 'vue-awesome'
 import VueImg from 'v-img'
-import Element from 'element-ui'
 import Multiselect from 'vue-multiselect'
 import VuejQuery from 'vue-jquery'
 import jQuery from 'jquery'
 
 import 'font-awesome/css/font-awesome.min.css'
 import vuetify from './plugins/vuetify';
+
+import VueQrcodeReader from "vue-qrcode-reader";
 
 global.jQuery = jQuery
 global.$ = jQuery
@@ -24,6 +25,7 @@ Vue.config.productionTip = false
 
 Vue.use(VueImg)
 Vue.use(VuejQuery)
+Vue.use(VueQrcodeReader);
 Vue.component('icon', VueAwesome)
 Vue.component('multiselect', Multiselect)
 
