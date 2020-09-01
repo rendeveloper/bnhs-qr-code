@@ -180,7 +180,7 @@
             name: "JOEMY D. TABINAS",
             department: "SHS Department",
             grade: "Grade 11-HUMSS Religion",
-            image: require("../assets/1.jpg"),
+            image: require("../assets/joemy.png"),
             bodyTemp: 0
           },
           {
@@ -189,7 +189,7 @@
             name: "SHEENA MARIE C. SALVA",
             department: "SHS Department",
             grade: "Grade 12-HUMSS Philosophy",
-            image: require("../assets/2.jpg"),
+            image: require("../assets/sheena.png"),
             bodyTemp: 0
           },
           {
@@ -198,7 +198,7 @@
             name: "EDWIN B. RUALES",
             department: "SHS Department",
             grade: "Grade 12-HUMSS History",
-            image: require("../assets/3.jpg"),
+            image: require("../assets/edwin.png"),
             bodyTemp: 0
           }
         ],
@@ -212,7 +212,7 @@
           name: "SHEENA MARIE C. SALVA",
           department: "SHS Department",
           grade: "Grade 12-HUMSS Philosophy",
-          image: require("../assets/2.jpg"),
+          image: require("../assets/sheena.png"),
           bodyTemp: 0
         },
         showAlert: false
