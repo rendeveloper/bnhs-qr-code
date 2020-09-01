@@ -2,7 +2,9 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-          <div style="float: right;">
+          <div style="float: right; 
+                      position: relative;
+                      z-index: 9998!important;">
             <v-alert
               :value="showAlert"
               width="380"
@@ -94,6 +96,16 @@
               :md="6"
               :sm="6"
             >
+            <div style="color: rgb(0 0 0 / 60%); 
+                        float: left; 
+                        margin-top: -50px; 
+                        margin-left: 45px;
+                        text-align: left;">
+              <h4> {{ formData.dateOfBirth }} </h4>
+              <h4> {{ formData.teacherId }} </h4>
+              <h4> {{ formData.address }} </h4>
+              <h4> {{ formData.healthStatus }} </h4>
+            </div>
             </v-col>
             <v-col
               :lg="6"
@@ -176,29 +188,38 @@
         dataSchool: [
           {
             id: 1,
-            teacherId: "TABINAS-2020-01",
+            teacherId: "DepEd-4657626",
             name: "JOEMY D. TABINAS",
+            dateOfBirth: "SEPTEMBER 1981",
+            address: "Ponong, Bato, Leyte",
+            healthStatus: "Fit to Work",
             department: "SHS Department",
             grade: "Grade 11-HUMSS Religion",
-            image: require("../assets/1.jpg"),
+            image: require("../assets/joemy.png"),
             bodyTemp: 0
           },
           {
             id: 2,
-            teacherId: "SALVA-2020-02",
+            teacherId: "DepEd-6291611",
             name: "SHEENA MARIE C. SALVA",
+            dateOfBirth: "APRIL 1987",
+            address: "Guerrero, Bato, Leyte",
+            healthStatus: "Fit to Work",
             department: "SHS Department",
             grade: "Grade 12-HUMSS Philosophy",
-            image: require("../assets/2.jpg"),
+            image: require("../assets/sheena.png"),
             bodyTemp: 0
           },
           {
             id: 3,
-            teacherId: "RUALES-2020-03",
+            teacherId: "DepEd-6298175",
             name: "EDWIN B. RUALES",
+            dateOfBirth: "AUGUST 1994",
+            address: "Tabunok, Bato, Leyte",
+            healthStatus: "Fit to Work",
             department: "SHS Department",
             grade: "Grade 12-HUMSS History",
-            image: require("../assets/3.jpg"),
+            image: require("../assets/edwin.png"),
             bodyTemp: 0
           }
         ],
@@ -207,12 +228,15 @@
         showQRCode: true,
         showQRStream: false,
         formData: {
-          id: 0,
-          teacherId: "SALVA-2020-02",
+          id: 2,
+          teacherId: "DepEd-6291611",
           name: "SHEENA MARIE C. SALVA",
+          dateOfBirth: "APRIL 1987",
+          address: "Guerrero, Bato, Leyte",
+          healthStatus: "Fit to Work",
           department: "SHS Department",
           grade: "Grade 12-HUMSS Philosophy",
-          image: require("../assets/2.jpg"),
+          image: require("../assets/sheena.png"),
           bodyTemp: 0
         },
         showAlert: false
@@ -259,6 +283,9 @@
           id: resultData.id,
           teacherId: resultData.teacherId,
           name: resultData.name,
+          dateOfBirth: resultData.dateOfBirth,
+          address: resultData.address,
+          healthStatus: resultData.healthStatus,
           department: resultData.department,
           grade: resultData.grade,
           image: resultData.image,
