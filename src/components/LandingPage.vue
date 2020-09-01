@@ -41,9 +41,9 @@
                 </div>
                 <qrcode-drop-zone v-if="showQRStream" @decode="onDecode" @init="logErrors">
                   <qrcode-stream style="height: 350px; width: 350px;" :camera="cameraSwitch" @decode="onDecode" :track="paintDots" @init="onInit">
-                    <v-btn style="width: 30px; height: 30px; float: left; top: 10px; left: 10px;" @click="switchCamera()">
+                    <button style="width: 30px; height: 30px; float: left; top: 10px; left: 10px;" @click="switchCamera()">
                       <img style="width: 40px; height: 40px;" :src="require('../assets/switch-camera-100.png')" alt="switch camera">
-                    </v-btn>
+                    </button>
                   </qrcode-stream>
                 </qrcode-drop-zone>
 
