@@ -10,7 +10,9 @@ import VueImg from 'v-img'
 import Multiselect from 'vue-multiselect'
 import VuejQuery from 'vue-jquery'
 import jQuery from 'jquery'
+import Element from 'element-ui'
 
+import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import vuetify from './plugins/vuetify';
 
@@ -26,6 +28,7 @@ Vue.config.productionTip = false
 Vue.use(VueImg)
 Vue.use(VuejQuery)
 Vue.use(VueQrcodeReader);
+Vue.use(Element)
 Vue.component('icon', VueAwesome)
 Vue.component('multiselect', Multiselect)
 
