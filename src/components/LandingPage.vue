@@ -2,9 +2,7 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-          <div style="float: right; 
-                      position: relative;
-                      z-index: 9998!important;">
+          <div class="alert-fixed">
             <v-alert
               :value="showAlert"
               width="380"
@@ -22,11 +20,22 @@
             class="mx-auto"
             max-width="650"
             width="580"
-            height="665"
+            height="690"
             :loading="loading"
           >
-            <v-row class="mt-5" justify="center">
-              <div style="height: 350px; width: 350px; margin-top: 100px;">
+            <v-row justify="center">
+              <v-img
+                id="project-joms"
+                alt="Vuetify Image Teacher"
+                class="shrink mt-2"
+                contain
+                src="../assets/project-joms.jpg"
+                transition="scale-transition"
+                width="450"
+                height="207"
+              />
+              <div style="height: 350px; width: 350px;">
+                
                 <p class="error">{{ error }}</p>
                 <p class="decode-result">Last result: <b>{{ qrResult }}</b></p>
 
@@ -76,8 +85,8 @@
               >
               <v-card width="250" height="250" :elevation="3">
                 <v-img
-                  alt="Vuetify Logo"
-                  class="shrink mr-2 mt-8"
+                  alt="Vuetify Image Teacher"
+                  class="shrink mr-2 mt-4"
                   contain
                   :src="formData.image"
                   transition="scale-transition"
@@ -120,11 +129,18 @@
                 hide-details="auto" 
                 type="number"
                 v-model="formData.bodyTemp"
-                style="width: 250px"/>
+                style="width: 250px; margin-top: -5px;"/>
+                <p v-if="formData.bodyTemp >= 38" class="v-messages theme--light error--text" style="margin-top: -20px;">You've got a fever! please, isolate yourself.</p>
+                <v-select
+                  :items="['In', 'Out']"
+                  label="Time"
+                  style="width: 80px; margin-top: -20px;"
+                ></v-select>
+                <span style="color: rgb(0 0 0 / 60%); float: right; margin-top: -45px; margin-right: 40px;">{{ formatDate() }}</span>
               </div>
             </v-col>
           </v-row>
-          <v-row  justify="center"
+          <v-row  justify="center" style="margin-top: -20px;"
             >
             <v-card
             color="#DB6001"
@@ -221,6 +237,138 @@
             grade: "Grade 12-HUMSS History",
             image: require("../assets/edwin.png"),
             bodyTemp: 0
+          },
+          {
+            id: 4,
+            teacherId: "DepEd-6294080",
+            name: "FERNANDO A. RALLOS JR.",
+            dateOfBirth: "SEPTEMBER 1979",
+            address: "Guerrero, Bato, Leyte",
+            healthStatus: "Fit to Work",
+            department: "SHS Department",
+            grade: "G12 - ABM Profit",
+            image: require("../assets/fernando.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 5,
+            teacherId: "DepEd-6296691",
+            name: "DIONITO I. QUISMONDO",
+            dateOfBirth: "JUNE 1980",
+            address: "Amagos, Bato, Leyte",
+            healthStatus: "Fit to Work",
+            department: "SHS Department",
+            grade: "G11 - SMAW Welders",
+            image: require("../assets/dionito.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 6,
+            teacherId: "DepEd-4553619",
+            name: "MACARIO S. LELIS",
+            dateOfBirth: "FEBRUARY 1979",
+            address: "bagongbayan, Bato, Leyte",
+            healthStatus: "Fit to Work",
+            department: "SHS Department",
+            grade: "G12 - SMAW Builders",
+            image: require("../assets/macario.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 7,
+            teacherId: "DepEd-6298044",
+            name: "WINNIELYN F. JAGUNOS",
+            dateOfBirth: "APRIL 1979",
+            address: "Tugas, Bato, Leyte",
+            healthStatus: "Hypertension with maintenance",
+            department: "SHS Department",
+            grade: "G11 - ABM Asset",
+            image: require("../assets/winnielyn.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 8,
+            teacherId: "DepEd-6303787",
+            name: "Ma. MARVIN C. AMATORIO",
+            dateOfBirth: "OCTOBER 1971",
+            address: "Guerrero, Bato, Leyte",
+            healthStatus: "Fit to work",
+            department: "SHS Department",
+            grade: "G12 - Cookery Chief",
+            image: require("../assets/ma.marvin.png"),
+            bodyTemp: 0
+          },
+          {
+            id: 9,
+            teacherId: "DepEd-6302010",
+            name: "JENNIFER G. NADALA",
+            dateOfBirth: "SEPTEMBER 1994",
+            address: "Taglibas, Matalom, Leyte",
+            healthStatus: "Fit to work",
+            department: "SHS Department",
+            grade: "G11 - HUMSS Culture",
+            image: require("../assets/jennifer.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 10,
+            teacherId: "DepEd-6294081",
+            name: "MELDIE M. SISON",
+            dateOfBirth: "JUNE 1988",
+            address: "P. Burgos St., Bato,Leyte",
+            healthStatus: "Fit to work",
+            department: "SHS Department",
+            grade: "G11 - Cookery Cuisine",
+            image: require("../assets/meldie.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 11,
+            teacherId: "DepEd-6297715",
+            name: "GEORGE N. ESPLANADA",
+            dateOfBirth: "February 1991",
+            address: "Pob., Hilongos, Leyte",
+            healthStatus: "Fit to work",
+            department: "Non-Teaching Staff",
+            grade: "Admin. Officer II",
+            image: require("../assets/george.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 12,
+            teacherId: "DepEd-0002505",
+            name: "HERA PAZ B. YAMSON",
+            dateOfBirth: "MAY 1996",
+            address: "Pob., Hilongos, Leyte",
+            healthStatus: "Fit to work",
+            department: "School Head",
+            grade: "Principal III",
+            image: require("../assets/hera.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 13,
+            teacherId: "DepEd-0006345",
+            name: "NEMA G. ILAYON",
+            dateOfBirth: "SEPTEMBER 1979",
+            address: "Tinago, Bato, Leyte",
+            healthStatus: "Fit to work",
+            department: "JHS  Science Department",
+            grade: "Master Teacher II",
+            image: require("../assets/nema.jpg"),
+            bodyTemp: 0
+          },
+          {
+            id: 14,
+            teacherId: "DepEd-4553619",
+            name: "EMMYLOU S. SABANDAL",
+            dateOfBirth: "SEPTEMBER 1983",
+            address: "Bagongbayan, Bato, Leyte",
+            healthStatus: "Fit to work",
+            department: "JHS Aral. Pan Department",
+            grade: "Dept. Head",
+            image: require("../assets/emmylou.jpg"),
+            bodyTemp: 0
           }
         ],
         qrResult: '',
@@ -260,6 +408,13 @@
     },
     methods: {
       onSubmit(){
+        if(this.formData.bodyTemp == ''){
+          this.$message({
+            message: "Required fields body temp.",
+            type: "error"
+          })
+          return;
+        }
         this.loader = 'loading'
         setTimeout(() =>{
           this.showQRStream = false
@@ -289,7 +444,7 @@
           department: resultData.department,
           grade: resultData.grade,
           image: resultData.image,
-          bodyTemp: null
+          bodyTemp: ""
         }
       },
       async onInit (promise) {
@@ -329,7 +484,44 @@
         pointArray.forEach(({ x, y }) => {
           ctx.fillRect(x - 5, y - 5, 10, 10)
         })
+      },
+      formatDate() {
+          var newDate = new Date();
+
+          var sMonth = this.padValue(newDate.getMonth() + 1);
+          var sDay = this.padValue(newDate.getDate());
+          var sYear = newDate.getFullYear();
+          var sHour = newDate.getHours();
+          var sMinute = this.padValue(newDate.getMinutes());
+          var sAMPM = "AM";
+
+          var iHourCheck = parseInt(sHour);
+
+          if (iHourCheck > 12) {
+              sAMPM = "PM";
+              sHour = iHourCheck - 12;
+          }
+          else if (iHourCheck === 0) {
+              sHour = "12";
+          }
+
+          sHour = this.padValue(sHour);
+
+          return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
+      },
+      padValue(value) {
+          return (value < 10) ? "0" + value : value;
       }
     }
   }
 </script>
+<style>
+ #project-joms{
+   border-radius: 5px;
+ }
+ .alert-fixed {
+    position:fixed; 
+    top: 80px; 
+    z-index:9999; 
+}
+</style>

@@ -1,87 +1,97 @@
 <template>
-  <v-container>
-    <v-card
-      height="400"
-      class="overflow-hidden"
-    >
-      <v-navigation-drawer
-        v-model="drawer"
-        :color="color"
-        :expand-on-hover="expandOnHover"
-        :mini-variant="miniVariant"
-        :right="right"
-        :permanent="permanent"
-        :src="bg"
-        absolute
-        dark
+  <v-sheet
+    height="100%"
+    class="overflow-hidden"
+    style="position: relative;"
+  >
+    <v-container class="fill-height">
+      <v-row
+        align="center"
+        justify="center"
       >
-        <v-list
-          dense
-          nav
-          class="py-0"
+        <v-btn
+          color="pink"
+          dark
+          @click.stop="menuDrawer = !menuDrawer"
         >
-          <v-list-item two-line :class="miniVariant && 'px-0'">
-            <v-list-item-avatar>
-              <img src="https://randomuser.me/api/portraits/men/81.jpg">
-            </v-list-item-avatar>
+          Toggle
+        </v-btn>
+      </v-row>
+    </v-container>
 
-            <v-list-item-content>
-              <v-list-item-title>Application</v-list-item-title>
-              <v-list-item-subtitle>Subtext</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+    <v-navigation-drawer
+      v-model="menuDrawer"
+      absolute
+      temporary
+    >
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-img src="../../assets/joemy.png"></v-img>
+        </v-list-item-avatar>
 
-          <v-divider></v-divider>
+        <v-list-item-content>
+          <v-list-item-title>Admin Joemy</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-          <v-list-item
-            v-for="item in items"
-            :key="item.title"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
+      <v-divider></v-divider>
 
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-    </v-card>
-  </v-container>
+      <v-list dense>
+
+        <v-list-item
+          link
+          :to="'/'"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Add New</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+  </v-sheet>
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex'
+
   export default {
     name: 'NavMenu',
-      data () {
-        return {
-          drawer: true,
-          items: [
-           { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-           { title: 'Photos', icon: 'mdi-image' },
-           { title: 'About', icon: 'mdi-help-box' },
-         ],
-         color: 'primary',
-         colors: [
-          'primary',
-          'blue',
-          'success',
-          'red',
-          'teal',
-         ],
-         right: false,
-         permanent: true,
-         miniVariant: true,
-         expandOnHover: true,
-         background: false,
-        }
-      },
-      computed: {
-        bg () {
-            return this.background ? 'https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg' : undefined
-        },
-      },
+    data () {
+      return {
+        menuDrawer: false,
+        items: [
+          { title: 'Home', icon: '' },
+          { title: 'Dashboard', icon: '' },
+        ],
+      }
+    },
+    watch: {
+      drawer(newVal){
+        this.menuDrawer = newVal
+      }
+    },
+    computed: {
+      ...mapState({
+        drawer: state => state.drawer
+      })
+    },
+    methods: {
+    }
   }
 </script>
