@@ -39,8 +39,25 @@
                 <p class="error">{{ error }}</p>
                 <p class="decode-result">Last result: <b>{{ qrResult }}</b></p>
 
-                <qrcode-stream v-if="showQRStream" :track="paintDots" @decode="onDecode" @init="onInit" />
+                <!-- <qrcode-stream v-if="showQRStream" :track="paintDots" @decode="onDecode" @init="onInit" /> -->
+                <div v-if="showQRStream">
+                  <p class="error" v-if="noFrontCamera">
+                    You don't seem to have a front camera on your device
+                  </p>
 
+                  <p class="error" v-if="noRearCamera">
+                    You don't seem to have a rear camera on your device
+                  </p>
+                </div>
+                <qrcode-drop-zone v-if="showQRStream" @decode="onDecode" @init="logErrors">
+                  <qrcode-stream style="height: 350px; width: 350px;" :camera="cameraSwitch" @decode="onDecode" :track="paintDots" @init="onInit">
+                    <button style="width: 30px; height: 30px; float: left; top: 10px; left: 10px;" @click="switchCamera()">
+                      <img style="width: 40px; height: 40px;" :src="require('../assets/switch-camera-100.png')" alt="switch camera">
+                    </button>
+                  </qrcode-stream>
+                </qrcode-drop-zone>
+
+                <qrcode-capture v-if="noStreamApiSupport" @decode="onDecode" />
                 <v-btn v-if="!showQRStream"
                     class="ma-2"
                     :loading="loading"
@@ -387,7 +404,11 @@
           image: require("../assets/sheena.png"),
           bodyTemp: 0
         },
-        showAlert: false
+        showAlert: false,
+        noStreamApiSupport: false,
+        cameraSwitch: 'front',
+        noRearCamera: false,
+        noFrontCamera: false
       }
     },
     computed: {
@@ -451,6 +472,7 @@
         try {
           await promise
         } catch (error) {
+
           if (error.name === 'NotAllowedError') {
             this.error = "ERROR: you need to grant camera access permisson"
           } else if (error.name === 'NotFoundError') {
@@ -462,9 +484,28 @@
           } else if (error.name === 'OverconstrainedError') {
             this.error = "ERROR: installed cameras are not suitable"
           } else if (error.name === 'StreamApiNotSupportedError') {
+            this.noStreamApiSupport = true
             this.error = "ERROR: Stream API is not supported in this browser"
           }
+          
+          const triedFrontCamera = this.cameraSwitch === 'front'
+          const triedRearCamera = this.cameraSwitch === 'rear'
+
+          const cameraMissingError = error.name === 'OverconstrainedError'
+
+          if (triedRearCamera && cameraMissingError) {
+            this.noRearCamera = true
+          }
+
+          if (triedFrontCamera && cameraMissingError) {
+            this.noFrontCamera = true
+          }
+
+          console.error(error)
         }
+      },
+      logErrors (promise) {
+        promise.catch(console.error)
       },
       paintDots(location, ctx) {
         const {
@@ -511,6 +552,16 @@
       },
       padValue(value) {
           return (value < 10) ? "0" + value : value;
+      },
+      switchCamera () {
+        switch (this.cameraSwitch) {
+          case 'front':
+            this.cameraSwitch = 'rear'
+            break
+          case 'rear':
+            this.cameraSwitch = 'front'
+            break
+        }
       }
     }
   }
