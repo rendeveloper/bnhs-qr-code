@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row class="text-center">
+    <v-row class="text-center mt-8">
       <v-col cols="12">
           <div class="alert-fixed">
             <v-alert
@@ -20,7 +20,7 @@
             class="mx-auto"
             max-width="650"
             width="580"
-            height="690"
+            height="665"
             :loading="loading"
           >
             <v-row justify="center">
@@ -452,6 +452,8 @@
         this.showQRStream = true
       },
       onDecode (result) {
+        var audio = new Audio(require('../assets/sounds/beep-07.mp3'))
+        audio.play()
         this.qrResult = result
         this.showQRCode = false
         var resultData = this.dataSchool.find(x => x.teacherId == this.qrResult)

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <nav-bar/>
-    <v-main>
+    <v-main style="padding: 0px 0px 0px;">
       <router-view :key="$route.path"/>
     </v-main>
   </v-app>
