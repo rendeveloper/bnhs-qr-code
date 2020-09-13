@@ -1,28 +1,10 @@
 <template>
-  <v-sheet
-    height="100%"
-    class="overflow-hidden"
-    style="position: relative;"
-  >
-    <v-container class="fill-height">
-      <v-row
-        align="center"
-        justify="center"
-      >
-        <v-btn
-          color="pink"
-          dark
-          @click.stop="menuDrawer = !menuDrawer"
-        >
-          Toggle
-        </v-btn>
-      </v-row>
-    </v-container>
-
-    <v-navigation-drawer
+  <v-sheet>
+  <v-navigation-drawer
       v-model="menuDrawer"
       absolute
       temporary
+      dark
     >
       <v-list-item>
         <v-list-item-avatar>
@@ -36,12 +18,8 @@
 
       <v-divider></v-divider>
 
-      <v-list dense>
-
-        <v-list-item
-          link
-          :to="'/'"
-        >
+      <v-list>
+        <v-list-item link :to="'/'">
           <v-list-item-icon>
             <v-icon>mdi-home</v-icon>
           </v-list-item-icon>
@@ -51,17 +29,35 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item
-          link
+        <v-list-group
+          v-for="item in menuItems"
+          :key="item.title"
+          v-model="item.active"
+          :prepend-icon="item.icon"
+          no-action
         >
-          <v-list-item-icon>
-            <v-icon>mdi-account</v-icon>
-          </v-list-item-icon>
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
+          </template>
 
-          <v-list-item-content>
-            <v-list-item-title>Add New</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item
+            v-for="subItem in item.items"
+            :key="subItem.title"
+            link
+            :to="subItem.link"
+          >
+
+            <v-list-item-content>
+              <v-list-item-title v-text="subItem.title"></v-list-item-title>
+            </v-list-item-content>
+            
+            <v-list-item-icon>
+              <v-icon>{{ subItem.icon }}</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
   </v-sheet>
@@ -79,6 +75,18 @@
           { title: 'Home', icon: '' },
           { title: 'Dashboard', icon: '' },
         ],
+        menuItems: [
+          {
+            icon: 'mdi-account',
+            title: 'Users',
+            items: [
+              { title: 'Create',
+                icon: 'mdi-plus', 
+                link: '/create' 
+              }
+            ]
+          }
+        ]
       }
     },
     watch: {
