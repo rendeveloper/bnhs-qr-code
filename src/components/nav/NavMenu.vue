@@ -1,11 +1,14 @@
 <template>
   <v-sheet>
   <v-navigation-drawer
-      v-model="menuDrawer"
+      v-model="drawer"
       absolute
       temporary
       dark
+      id="core-navigation-drawer"
     >
+     <v-divider class="mb-1" />
+      
       <v-list-item>
         <v-list-item-avatar>
           <v-img src="../../assets/joemy.png"></v-img>
@@ -16,7 +19,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider></v-divider>
+      <v-divider class="mb-2" />
 
       <v-list>
         <v-list-item link :to="'/'">
@@ -28,11 +31,10 @@
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
+        
         <v-list-group
           v-for="item in menuItems"
           :key="item.title"
-          v-model="item.active"
           :prepend-icon="item.icon"
           no-action
         >
@@ -78,7 +80,7 @@
         menuItems: [
           {
             icon: 'mdi-account',
-            title: 'Users',
+            title: 'User Profile',
             items: [
               { title: 'Create',
                 icon: 'mdi-plus', 
@@ -90,16 +92,23 @@
       }
     },
     watch: {
-      drawer(newVal){
-        this.menuDrawer = newVal
-      }
     },
     computed: {
-      ...mapState({
-        drawer: state => state.drawer
-      })
+      drawer: {
+        get () {
+          return this.$store.state.drawer
+        },
+        set (val) {
+          this.$store.commit('SET_DRAWER', val)
+        },
+      }
     },
     methods: {
     }
   }
 </script>
+<style>
+  div.v-list-group.v-list-group--active.v-list-group--no-action.primary--text {
+    color: #ffffff !important;
+  }
+</style>

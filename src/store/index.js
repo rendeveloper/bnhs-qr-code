@@ -5,16 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    drawer: false
+    drawer: null
   },
   mutations: {
-    navMenuDrawer(state, drawer){
-      state.drawer = drawer
+    SET_DRAWER (state, payload) {
+      state.drawer = payload
     }
   },
   actions: {
-    navMenuDrawer({ commit }, drawer){
-      commit('navMenuDrawer', drawer)
+    OPEN_DRAWER({ commit }, drawer){
+      commit('SET_DRAWER', drawer)
     }
   },
   modules: {

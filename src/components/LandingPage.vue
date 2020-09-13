@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-row class="text-center mt-8">
+  <v-container class="mt-8">
+    <v-row class="text-center">
       <v-col cols="12">
           <div class="alert-fixed">
             <v-alert
