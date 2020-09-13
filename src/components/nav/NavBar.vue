@@ -6,7 +6,7 @@
       dark
     >
       <div class="d-flex align-center"
-      @click.stop="isPopUp()">
+      @click="isPopUp()">
         <v-img
           alt="Vuetify Logo"
           class="shrink mr-2"
@@ -42,11 +42,11 @@
     }, 
     methods: {
       ...mapActions({
-        newTestt: 'navMenuDrawer'
+        openMenu: 'navMenuDrawer'
       }),
       isPopUp(){
         let menuDrawer = this.drawer
-        this.newTestt(menuDrawer = !menuDrawer)
+        this.openMenu(menuDrawer = !menuDrawer)
       }
     }
   }
