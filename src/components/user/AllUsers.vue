@@ -34,7 +34,7 @@
 <script>
 
   export default {
-    name: 'All Users',
+    name: 'AllUsers',
     //
     data() {
       return {      
