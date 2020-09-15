@@ -12,11 +12,13 @@ import VuejQuery from 'vue-jquery'
 import jQuery from 'jquery'
 import Element from 'element-ui'
 
+import './assets/scss/styles.scss'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import vuetify from './plugins/vuetify';
 
 import VueQrcodeReader from "vue-qrcode-reader";
+import VueQrcodeGenerator from '@chenfengyuan/vue-qrcode';
 
 global.jQuery = jQuery
 global.$ = jQuery
@@ -29,6 +31,7 @@ Vue.use(VueImg)
 Vue.use(VuejQuery)
 Vue.use(VueQrcodeReader);
 Vue.use(Element)
+Vue.component(VueQrcodeGenerator.name, VueQrcodeGenerator);
 Vue.component('icon', VueAwesome)
 Vue.component('multiselect', Multiselect)
 

@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LandingPage from '../components/LandingPage'
+import LandingPage from '@/components/LandingPage'
+import UserCreate from '@/components/user/UserCreate'
+import AllProfile from '@/components/user/AllProfile'
+
 
 Vue.use(VueRouter)
 
@@ -9,6 +12,17 @@ Vue.use(VueRouter)
     path: '/',
     name: 'Home',
     component: LandingPage
+  },
+  // Pages
+  {
+    name: 'User Create',
+    path: '/create',
+    component: UserCreate,
+  },
+  {
+    name: 'All Profile',
+    path: '/all',
+    component: AllProfile,
   }
   //,
   //{

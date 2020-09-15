@@ -23,7 +23,7 @@
       <v-btn
         text
       >
-        <span class="mr-2">Logout</span>
+        <span class="mr-2" style="letter-spacing: 2px;"><strong>Logout</strong></span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
@@ -42,11 +42,10 @@
     }, 
     methods: {
       ...mapActions({
-        openMenu: 'navMenuDrawer'
+        openDrawer: 'OPEN_DRAWER'
       }),
       isPopUp(){
-        let menuDrawer = this.drawer
-        this.openMenu(menuDrawer = !menuDrawer)
+        this.openDrawer(!this.drawer)
       }
     }
   }
