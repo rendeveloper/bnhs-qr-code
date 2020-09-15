@@ -2,7 +2,7 @@
   <v-container class="mt-8">
     <v-row class="text-center">
       <v-col cols="12">
-          <div class="alert-fixed">
+          <div class="alert-fixed" justify="center">
             <v-alert
               :value="showAlert"
               width="380"
@@ -34,6 +34,10 @@
                 width="450"
                 height="207"
               />
+              <!-- <div class="mt-15">
+                <h1>Welcome to Project JOMS</h1>
+                <h4>justifying Online Monitoring System</h4>
+              </div> -->
               <div style="height: 350px; width: 350px;">
                 
                 <p class="error">{{ error }}</p>
@@ -127,8 +131,8 @@
                         margin-top: -50px; 
                         margin-left: 45px;
                         text-align: left;">
-              <h4> {{ formData.dateOfBirth }} </h4>
               <h4> {{ formData.teacherId }} </h4>
+              <h4> {{ formData.dateOfBirth }} </h4>
               <h4> {{ formData.address }} </h4>
               <h4> {{ formData.healthStatus }} </h4>
             </div>
@@ -452,7 +456,7 @@
         this.showQRStream = true
       },
       onDecode (result) {
-        var audio = new Audio(require('../assets/sounds/beep-07.mp3'))
+        var audio = new Audio(require("../assets/sounds/beep-07.wav"))
         audio.play()
         this.qrResult = result
         this.showQRCode = false

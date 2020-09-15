@@ -15,7 +15,7 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>Admin Joemy</v-list-item-title>
+          <v-list-item-title><strong>Admin Joemy</strong></v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -24,11 +24,11 @@
       <v-list>
         <v-list-item link :to="'/'">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
+            <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         
@@ -73,15 +73,15 @@
     data () {
       return {
         menuDrawer: false,
-        items: [
-          { title: 'Home', icon: '' },
-          { title: 'Dashboard', icon: '' },
-        ],
         menuItems: [
           {
             icon: 'mdi-account',
             title: 'User Profile',
             items: [
+              { title: 'All Profile',
+                icon: 'mdi-account-multiple', 
+                link: '/all' 
+              },
               { title: 'Create',
                 icon: 'mdi-plus', 
                 link: '/create' 
