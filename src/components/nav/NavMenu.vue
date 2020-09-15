@@ -78,13 +78,14 @@
             icon: 'mdi-account',
             title: 'User Profile',
             items: [
-              { title: 'All Profile',
+              { 
+                title: 'All Users',
                 icon: 'mdi-account-multiple', 
-                link: '/all' 
+                link: '/user/all' 
               },
               { title: 'Create',
                 icon: 'mdi-plus', 
-                link: '/create' 
+                link: '/user/create' 
               }
             ]
           }

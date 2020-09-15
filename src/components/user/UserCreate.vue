@@ -271,7 +271,7 @@
             message: "The profile was saved successfully",
             type: "success"
           })
-          this.$router.push('/all')
+          this.$router.push('/user/all')
           this.loading = false
         }, 2000)
       },

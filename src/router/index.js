@@ -2,27 +2,31 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LandingPage from '@/components/LandingPage'
 import UserCreate from '@/components/user/UserCreate'
-import AllProfile from '@/components/user/AllProfile'
+import AllUsers from '@/components/user/AllUsers'
 
 
 Vue.use(VueRouter)
 
   const routes = [
+  /* {
+    path: '/',
+    redirect: '/dashboard'
+  }, */
   {
     path: '/',
-    name: 'Home',
+    name: 'Dashboard',
     component: LandingPage
   },
   // Pages
   {
     name: 'User Create',
-    path: '/create',
+    path: '/user/create',
     component: UserCreate,
   },
   {
-    name: 'All Profile',
-    path: '/all',
-    component: AllProfile,
+    name: 'All Users',
+    path: '/user/all',
+    component: AllUsers,
   }
   //,
   //{
