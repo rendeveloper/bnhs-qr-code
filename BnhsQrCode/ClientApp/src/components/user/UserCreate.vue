@@ -226,7 +226,7 @@
               :disabled="formData.teacherId == ''"
               @click="SAVE_QR_CODE"
             >
-              Save QR Code
+              Download QR Code
             </v-btn>
           </v-card-text>
         </v-card>
