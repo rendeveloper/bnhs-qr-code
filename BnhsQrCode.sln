@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bnhs-qr-code", "bnhs-qr-code\bnhs-qr-code.csproj", "{3B27BFD1-DB7F-4EB8-8B1D-8F093B4B7919}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BnhsQrCode", "BnhsQrCode\BnhsQrCode.csproj", "{6EFA088F-5B40-4677-99D5-492EF55A500E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3B27BFD1-DB7F-4EB8-8B1D-8F093B4B7919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B27BFD1-DB7F-4EB8-8B1D-8F093B4B7919}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B27BFD1-DB7F-4EB8-8B1D-8F093B4B7919}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B27BFD1-DB7F-4EB8-8B1D-8F093B4B7919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EFA088F-5B40-4677-99D5-492EF55A500E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EFA088F-5B40-4677-99D5-492EF55A500E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EFA088F-5B40-4677-99D5-492EF55A500E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EFA088F-5B40-4677-99D5-492EF55A500E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C5BEF8D0-5D86-48DA-A605-68D3847E66D9}
+		SolutionGuid = {D536C632-189F-48DF-944D-E19AD15B928D}
 	EndGlobalSection
 EndGlobal

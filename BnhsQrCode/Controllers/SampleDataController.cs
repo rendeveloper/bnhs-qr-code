@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace bnhs_qr_code.Controllers
+namespace BnhsQrCode.Controllers
 {
     [Route("api/[controller]")]
     public class SampleDataController : Controller

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VueCliMiddleware;
 
-namespace bnhs_qr_code
+namespace BnhsQrCode
 {
     public class Startup
     {
@@ -66,7 +66,7 @@ namespace bnhs_qr_code
             app.UseCors("AllowSpecificOrigin");
             //Remove HTTPS redirect middleware for development
             //otherwise it’s necessary to configure ASP.NET Core SSL certificate for a Vue app
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 

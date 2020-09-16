@@ -8,9 +8,7 @@ Please make sure to install nodejs in your machine. Please refer to [node.js](ht
 
 ## Sample config file
 ```json
-{
-  
-}
+{}
 
 ```
 #
