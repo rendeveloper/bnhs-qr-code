@@ -119,8 +119,8 @@
                   md="4"
                 >
                   <v-text-field
-                    label="Grade / Admin / Principal"
-                    v-model="formData.grade"
+                    label="Grade / Admin / Principal / Role"
+                    v-model="formData.role"
                   />
                 </v-col>
 
@@ -177,7 +177,7 @@
                 <v-img
                 alt="Image Teacher"
                 contain
-                :src="formData.image"
+                :src="imageBase"
                 transition="scale-transition"
                 
               />
@@ -190,11 +190,11 @@
             </h6>
 
             <h4 class="display-2 font-weight-light mb-3 black--text">
-              {{ formData.firstName + ' ' + formData.middleName + ' ' + formData.lastName }}
+              {{ (formData.firstName + ' ' + formData.middleName + ' ' + formData.lastName).toUpperCase()  }}
             </h4>
 
             <p class="font-weight-light grey--text">
-              {{ formData.grade }}
+              {{ formData.role }}
             </p>
             <input type="file" id="file-id" ref="file" @change="onFileChange" accept="image/*" style="display: none">  <!--  -->
             <v-btn
@@ -223,7 +223,7 @@
               color="primary"
               rounded
               class="mr-0"
-              :disabled="formData.teacherId == ''"
+              :disabled="formData.teacherId == '' && formData.firstName == '' && formData.lastName == ''"
               @click="SAVE_QR_CODE"
             >
               Download QR Code
@@ -236,6 +236,7 @@
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex'
   import '../../assets/css/vuetify_material.css'
   var QRCode = require('qrcode')
   var FileSaver = require('file-saver');
@@ -258,22 +259,44 @@
           address: "",
           healthStatus: "",
           department: "",
-          grade: "",
-          image: "https://www.w3schools.com/howto/img_avatar.png"
-        }
+          role: "",
+          image: []
+        },
+        imageBase: require("../../assets/image/img_avatar.png")
       }
     },
     methods: {
-      onSubmit(){
-        this.loading = true
-        setTimeout(() =>{
-          this.$message({
-            message: "The profile was saved successfully",
-            type: "success"
-          })
-          this.$router.push('/user/all')
-          this.loading = false
-        }, 2000)
+      ...mapActions(['saveUser']),
+      async onSubmit(){
+        var self = this
+        self.loading = true
+
+        await self.saveUser(self.formData).then(response => {
+          setTimeout(() =>{
+            self.$message({
+              message: "The profile was saved successfully",
+              type: "success"
+            })
+            self.formData = {
+              id: 0,
+              teacherId: "",
+              firstName: "",
+              lastName: "",
+              middleName: "",
+              dateOfBirth: "",
+              address: "",
+              healthStatus: "",
+              department: "",
+              role: "",
+              image: []
+            }
+            self.imageBase = require("../../assets/image/img_avatar.png")
+            self.$router.push('/user/all')
+            self.loading = false
+          }, 2000)
+        }).catch(error => {
+
+        })
       },
       SAVE_QR_CODE(){
         var self = this
@@ -281,10 +304,10 @@
           width: 300, 
           margin: 2
         }
-        debugger
+
         QRCode.toDataURL(self.formData.teacherId, opts, function (err, url) {
           if (err) throw err
-          debugger
+          
           FileSaver.saveAs(url, self.formData.teacherId + '-' + self.formData.lastName +".png");
         })
       },
@@ -296,7 +319,9 @@
           return;
 
         let customJsonFiles = await this.getFiles(files);
-        self.formData.image = customJsonFiles.base64String
+        
+        self.formData.image = customJsonFiles.bytes
+        self.imageBase = 'data:image/png;base64,' +  customJsonFiles.base64String
       },
       getFiles(files) {
           return this.getFile(files[0]);
@@ -308,11 +333,11 @@
             reader.onload = function () {
 
                 //This will result in an array that will be recognized by C#.NET WebApi as a byte[]
-                //let bytes = Array.from(new Uint8Array(this.result));
+                let bytes = Array.from(new Uint8Array(this.result));
 
                 //if you want the base64encoded file you would use the below line:
-                //let base64String = btoa(bytes.map((item) => String.fromCharCode(item)).join(""));
-                let base64String = this.result
+                let base64String = btoa(bytes.map((item) => String.fromCharCode(item)).join(""));
+                //let base64String = this.result
 
                 //Hash CheckSum MD5
                 var wordArray = CryptoJS.lib.WordArray.create(this.result + new Date().toString());
@@ -320,6 +345,7 @@
 
                 //Resolve the promise with your custom file structure
                 resolve({
+                    bytes: bytes,
                     base64String: base64String,
                     originalFileName: file.name,
                     fileName: hash,
@@ -328,8 +354,8 @@
                     uploadDate: new Date()
                 });
             }
-            //reader.readAsArrayBuffer(file);
-            reader.readAsDataURL(file);
+            reader.readAsArrayBuffer(file);
+            //reader.readAsDataURL(file);
         });
       }
     }

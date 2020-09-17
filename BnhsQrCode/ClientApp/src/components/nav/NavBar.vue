@@ -37,7 +37,7 @@
     name: 'NavBar',
     computed: {
       ...mapState({
-        drawer: state => state.drawer
+        drawer: state => state.drawer.isOpen
       })
     }, 
     methods: {
