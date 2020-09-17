@@ -97,7 +97,7 @@
     computed: {
       drawer: {
         get () {
-          return this.$store.state.drawer
+          return this.$store.state.drawer.isOpen
         },
         set (val) {
           this.$store.commit('SET_DRAWER', val)

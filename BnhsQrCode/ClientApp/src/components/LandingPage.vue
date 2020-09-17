@@ -67,7 +67,7 @@
                     :loading="loading"
                     :disabled="loading"
                     color="primary"
-                    @click="onSubmitQR()"
+                    @click="onStartQR()"
                   >
                     Start
                   </v-btn>
@@ -149,13 +149,14 @@
                 :rules="rules" 
                 hide-details="auto" 
                 type="number"
-                v-model="formData.bodyTemp"
+                v-model="scanHistory.bodyTemp"
                 style="width: 250px; margin-top: -5px;"/>
-                <p v-if="formData.bodyTemp >= 38" class="v-messages theme--light error--text" style="margin-top: -20px;">You've got a fever! please, isolate yourself.</p>
+                <p v-if="scanHistory.bodyTemp >= 38" class="v-messages theme--light error--text" style="margin-top: -20px;">You've got a fever! please, isolate yourself.</p>
                 <v-select
                   :items="['In', 'Out']"
                   label="Time"
                   style="width: 80px; margin-top: -20px;"
+                  v-model="scanHistory.timeStatus"
                 ></v-select>
                 <span style="color: rgb(0 0 0 / 60%); float: right; margin-top: -45px; margin-right: 40px;">{{ formatDate() }}</span>
               </div>
@@ -181,13 +182,13 @@
                             font-weight: 500;
                             line-height: 2rem;
                             letter-spacing: normal !important;
-                ">{{ formData.name }}</h3>
+                ">{{ (formData.firstName + ' ' + formData.middleName + ' ' + formData.lastName).toUpperCase() }}</h3>
                 <span class="mb-1" style="font-size: 0.875rem;
                              font-weight: 400;
                              line-height: 1.375rem;
                              letter-spacing: 0.0071428571em;
                              color: rgba(255, 255, 255, 0.7);
-                             ">{{ formData.grade }}</span>
+                             ">{{ formData.role }}</span>
               </div>
             </div>
           </v-card>
@@ -211,6 +212,7 @@
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex'
   export default {
     name: 'LandingPage',
 
@@ -222,191 +224,28 @@
         ],
         loader: null,
         loading: false,
-        dataSchool: [
-          {
-            id: 1,
-            teacherId: "DepEd-4657626",
-            name: "JOEMY D. TABINAS",
-            dateOfBirth: "SEPTEMBER 1981",
-            address: "Ponong, Bato, Leyte",
-            healthStatus: "Fit to Work",
-            department: "SHS Department",
-            grade: "Grade 11-HUMSS Religion",
-            image: require("../assets/joemy.png"),
-            bodyTemp: 0
-          },
-          {
-            id: 2,
-            teacherId: "DepEd-6291611",
-            name: "SHEENA MARIE C. SALVA",
-            dateOfBirth: "APRIL 1987",
-            address: "Guerrero, Bato, Leyte",
-            healthStatus: "Fit to Work",
-            department: "SHS Department",
-            grade: "Grade 12-HUMSS Philosophy",
-            image: require("../assets/sheena.png"),
-            bodyTemp: 0
-          },
-          {
-            id: 3,
-            teacherId: "DepEd-6298175",
-            name: "EDWIN B. RUALES",
-            dateOfBirth: "AUGUST 1994",
-            address: "Tabunok, Bato, Leyte",
-            healthStatus: "Fit to Work",
-            department: "SHS Department",
-            grade: "Grade 12-HUMSS History",
-            image: require("../assets/edwin.png"),
-            bodyTemp: 0
-          },
-          {
-            id: 4,
-            teacherId: "DepEd-6294080",
-            name: "FERNANDO A. RALLOS JR.",
-            dateOfBirth: "SEPTEMBER 1979",
-            address: "Guerrero, Bato, Leyte",
-            healthStatus: "Fit to Work",
-            department: "SHS Department",
-            grade: "G12 - ABM Profit",
-            image: require("../assets/fernando.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 5,
-            teacherId: "DepEd-6296691",
-            name: "DIONITO I. QUISMONDO",
-            dateOfBirth: "JUNE 1980",
-            address: "Amagos, Bato, Leyte",
-            healthStatus: "Fit to Work",
-            department: "SHS Department",
-            grade: "G11 - SMAW Welders",
-            image: require("../assets/dionito.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 6,
-            teacherId: "DepEd-4553619",
-            name: "MACARIO S. LELIS",
-            dateOfBirth: "FEBRUARY 1979",
-            address: "bagongbayan, Bato, Leyte",
-            healthStatus: "Fit to Work",
-            department: "SHS Department",
-            grade: "G12 - SMAW Builders",
-            image: require("../assets/macario.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 7,
-            teacherId: "DepEd-6298044",
-            name: "WINNIELYN F. JAGUNOS",
-            dateOfBirth: "APRIL 1979",
-            address: "Tugas, Bato, Leyte",
-            healthStatus: "Hypertension with maintenance",
-            department: "SHS Department",
-            grade: "G11 - ABM Asset",
-            image: require("../assets/winnielyn.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 8,
-            teacherId: "DepEd-6303787",
-            name: "Ma. MARVIN C. AMATORIO",
-            dateOfBirth: "OCTOBER 1971",
-            address: "Guerrero, Bato, Leyte",
-            healthStatus: "Fit to work",
-            department: "SHS Department",
-            grade: "G12 - Cookery Chief",
-            image: require("../assets/ma.marvin.png"),
-            bodyTemp: 0
-          },
-          {
-            id: 9,
-            teacherId: "DepEd-6302010",
-            name: "JENNIFER G. NADALA",
-            dateOfBirth: "SEPTEMBER 1994",
-            address: "Taglibas, Matalom, Leyte",
-            healthStatus: "Fit to work",
-            department: "SHS Department",
-            grade: "G11 - HUMSS Culture",
-            image: require("../assets/jennifer.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 10,
-            teacherId: "DepEd-6294081",
-            name: "MELDIE M. SISON",
-            dateOfBirth: "JUNE 1988",
-            address: "P. Burgos St., Bato,Leyte",
-            healthStatus: "Fit to work",
-            department: "SHS Department",
-            grade: "G11 - Cookery Cuisine",
-            image: require("../assets/meldie.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 11,
-            teacherId: "DepEd-6297715",
-            name: "GEORGE N. ESPLANADA",
-            dateOfBirth: "February 1991",
-            address: "Pob., Hilongos, Leyte",
-            healthStatus: "Fit to work",
-            department: "Non-Teaching Staff",
-            grade: "Admin. Officer II",
-            image: require("../assets/george.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 12,
-            teacherId: "DepEd-0002505",
-            name: "HERA PAZ B. YAMSON",
-            dateOfBirth: "MAY 1996",
-            address: "Pob., Hilongos, Leyte",
-            healthStatus: "Fit to work",
-            department: "School Head",
-            grade: "Principal III",
-            image: require("../assets/hera.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 13,
-            teacherId: "DepEd-0006345",
-            name: "NEMA G. ILAYON",
-            dateOfBirth: "SEPTEMBER 1979",
-            address: "Tinago, Bato, Leyte",
-            healthStatus: "Fit to work",
-            department: "JHS  Science Department",
-            grade: "Master Teacher II",
-            image: require("../assets/nema.jpg"),
-            bodyTemp: 0
-          },
-          {
-            id: 14,
-            teacherId: "DepEd-4553619",
-            name: "EMMYLOU S. SABANDAL",
-            dateOfBirth: "SEPTEMBER 1983",
-            address: "Bagongbayan, Bato, Leyte",
-            healthStatus: "Fit to work",
-            department: "JHS Aral. Pan Department",
-            grade: "Dept. Head",
-            image: require("../assets/emmylou.jpg"),
-            bodyTemp: 0
-          }
-        ],
         qrResult: '',
         error: '',
         showQRCode: true,
         showQRStream: false,
         formData: {
-          id: 2,
-          teacherId: "DepEd-6291611",
-          name: "SHEENA MARIE C. SALVA",
-          dateOfBirth: "APRIL 1987",
-          address: "Guerrero, Bato, Leyte",
+          id: 0,
+          teacherId: "DepEd-4657626",
+          firstName: "JOEMY",
+          lastName: "TABINAS",
+          middleName: "D.",
+          dateOfBirth: "SEPTEMBER 1981",
+          address: "Ponong, Bato, Leyte",
           healthStatus: "Fit to Work",
           department: "SHS Department",
-          grade: "Grade 12-HUMSS Philosophy",
-          image: require("../assets/sheena.png"),
-          bodyTemp: 0
+          role: "Grade 11-HUMSS Religion",
+          image: require("../assets/joemy.png")
+        },
+        scanHistory: {
+          userProfileId: 0,
+          bodyTemp: "",
+          timeStatus: "",
+          CreatedByDateTime: new Date()
         },
         showAlert: false,
         noStreamApiSupport: false,
@@ -415,11 +254,13 @@
         noFrontCamera: false
       }
     },
+    created() {
+    },
     computed: {
       cols () {
         const { lg, sm } = this.$vuetify.breakpoint
         return lg ? [3, 9] : sm ? [9, 3] : [6, 6]
-      },
+      }
     },
     watch: {
       loader () {
@@ -432,47 +273,92 @@
       },
     },
     methods: {
-      onSubmit(){
-        if(this.formData.bodyTemp == ''){
+      ...mapActions(['getScanQRCode', 'saveScanHistory']),
+      async onSubmit(){
+        if(this.scanHistory.bodyTemp == '' || this.scanHistory.timeStatus == ''){
           this.$message({
-            message: "Required fields body temp.",
+            message: "Required fields.",
             type: "error"
           })
           return;
         }
-        this.loader = 'loading'
-        setTimeout(() =>{
-          this.showQRStream = false
-          this.showQRCode = true
-          this.showAlert = true
-          setTimeout(() => (this.showAlert = false), 1000)
-        }, 2000)
+
+        var self = this
+        self.scanHistory.userProfileId = self.formData.id
+        await self.saveScanHistory(self.scanHistory).then(response => {
+          self.loader = 'loading'
+          setTimeout(() =>{
+            self.showQRStream = false
+            self.showQRCode = true
+            self.showAlert = true
+            setTimeout(() => {
+              self.showAlert = false
+              self.formData = {
+                id: 0,
+                teacherId: "DepEd-4657626",
+                firstName: "JOEMY",
+                lastName: "TABINAS",
+                middleName: "D.",
+                dateOfBirth: "SEPTEMBER 1981",
+                address: "Ponong, Bato, Leyte",
+                healthStatus: "Fit to Work",
+                department: "SHS Department",
+                role: "Grade 11-HUMSS Religion",
+                image: require("../assets/joemy.png")
+              }
+              self.scanHistory = {
+                userProfileId: 0,
+                bodyTemp: "",
+                timeStatus: "",
+                CreatedByDateTime: new Date()
+              }
+            }, 1000)
+          }, 2000)
+        }).catch(error => {
+
+        })
       },
-      onSubmitQR(){
+      onStartQR(){
         this.loader = 'loading'
         setTimeout(() => (this.showQRStream = true), 2000)
       },
       qrStart(){
         this.showQRStream = true
       },
-      onDecode (result) {
+      async onDecode (result) {
+        if(result === undefined || result === "" || result === null){
+          return;
+        }
+        var self = this
         var audio = new Audio(require("../assets/sounds/beep-07.wav"))
         audio.play()
         this.qrResult = result
         this.showQRCode = false
-        var resultData = this.dataSchool.find(x => x.teacherId == this.qrResult)
-        this.formData = {
-          id: resultData.id,
-          teacherId: resultData.teacherId,
-          name: resultData.name,
-          dateOfBirth: resultData.dateOfBirth,
-          address: resultData.address,
-          healthStatus: resultData.healthStatus,
-          department: resultData.department,
-          grade: resultData.grade,
-          image: resultData.image,
-          bodyTemp: ""
+        var scanQRCode = {
+          teacherId: result
         }
+        await self.getScanQRCode(scanQRCode).then(response => {
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
+          const d = new Date(response.data.dateOfBirth);
+
+          self.formData.id = response.data.id
+          self.formData.teacherId = response.data.teacherId
+          self.formData.firstName = response.data.firstName
+          self.formData.lastName = response.data.lastName
+          self.formData.middleName = response.data.middleName
+          self.formData.name = response.data.name
+
+          self.formData.dateOfBirth = monthNames[d.getMonth()].toUpperCase() + ' ' + d.getFullYear()
+
+          self.formData.address = response.data.address
+          self.formData.healthStatus = response.data.healthStatus
+          self.formData.department = response.data.department
+          self.formData.role = response.data.role
+          self.formData.image = 'data:image/png;base64,' + response.data.image
+        }).catch(error => {
+        })
       },
       async onInit (promise) {
         try {
