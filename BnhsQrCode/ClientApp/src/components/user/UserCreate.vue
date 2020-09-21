@@ -293,7 +293,7 @@
             self.imageBase = require("../../assets/image/img_avatar.png")
             self.$router.push('/user/all')
             self.loading = false
-          }, 2000)
+          }, 1000)
         }).catch(error => {
 
         })

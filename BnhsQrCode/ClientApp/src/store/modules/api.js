@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const state = {
-  baseUrl: 'http://localhost:57176',
+  baseUrl: 'http://localhost:57176', /* https://bnhs-joms.cyou */
   users: []
 };
 

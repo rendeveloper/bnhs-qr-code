@@ -105,15 +105,15 @@
                 :sm="6"
               >
               <v-card width="250" height="250" :elevation="3">
-                <v-img
-                  alt="Vuetify Image Teacher"
-                  class="shrink mr-2 mt-4"
-                  contain
-                  :src="formData.image"
-                  transition="scale-transition"
-                  width="250"
-                  height="250"
-                />
+                  <v-img
+                    alt="Vuetify Image Teacher"
+                    class="shrink mr-2 mt-4"
+                    contain
+                    :src="formData.image"
+                    transition="scale-transition"
+                    width="250"
+                    height="250"
+                  />
               </v-card>
             </v-col>
           </v-row>
@@ -128,13 +128,41 @@
             >
             <div style="color: rgb(0 0 0 / 60%); 
                         float: left; 
-                        margin-top: -50px; 
+                        margin-top: -40px; 
                         margin-left: 45px;
                         text-align: left;">
+               <v-skeleton-loader
+                :loading="skeletonLoading"
+                transition="none"
+                type="text"
+                width="150"
+              >         
               <h4> {{ formData.teacherId }} </h4>
+              </v-skeleton-loader>
+
+              <v-skeleton-loader
+                :loading="skeletonLoading"
+                type="text"
+                width="150"
+              >
               <h4> {{ formData.dateOfBirth }} </h4>
+              </v-skeleton-loader>
+
+              <v-skeleton-loader
+                :loading="skeletonLoading"
+                type="text"
+                width="150"
+              >
               <h4> {{ formData.address }} </h4>
+              </v-skeleton-loader>
+
+              <v-skeleton-loader
+                :loading="skeletonLoading"
+                type="text"
+                width="150"
+              >
               <h4> {{ formData.healthStatus }} </h4>
+              </v-skeleton-loader>
             </div>
             </v-col>
             <v-col
@@ -171,24 +199,46 @@
           >
             <div>
               <div class="mt-6 mb-6">
-                <span style='font-size: 1.5rem !important;
-                            font-weight: 400;
-                            line-height: 2rem;
-                            letter-spacing: normal !important;
-                            font-family: "Roboto", sans-serif !important;
-                            '>{{ formData.department }}</span>
-                
-                <h3 class="mb-1 mt-2" style="font-size: 1.5rem !important;
-                            font-weight: 500;
-                            line-height: 2rem;
-                            letter-spacing: normal !important;
-                ">{{ (formData.firstName + ' ' + formData.middleName + ' ' + formData.lastName).toUpperCase() }}</h3>
+                <v-skeleton-loader
+                  :loading="skeletonLoading"
+                  type="text"
+                  width="160"
+                  class="mx-auto"
+                >
+                  <span style='font-size: 1.5rem !important;
+                              font-weight: 400;
+                              line-height: 2rem;
+                              letter-spacing: normal !important;
+                              font-family: "Roboto", sans-serif !important;
+                              '>{{ formData.department }}</span>
+                </v-skeleton-loader>
+
+                <v-skeleton-loader
+                  :loading="skeletonLoading"
+                  type="text"
+                  width="200"
+                  class="mx-auto"
+                >
+                  <h3 class="mb-1 mt-2" style="font-size: 1.5rem !important;
+                              font-weight: 500;
+                              line-height: 2rem;
+                              letter-spacing: normal !important;
+                  ">{{ (formData.firstName + ' ' + formData.middleName + ' ' + formData.lastName).toUpperCase() }}</h3>
+              </v-skeleton-loader>
+
+                <v-skeleton-loader
+                  :loading="skeletonLoading"
+                type="text"
+                width="160"
+                class="mx-auto"
+              >
                 <span class="mb-1" style="font-size: 0.875rem;
                              font-weight: 400;
                              line-height: 1.375rem;
                              letter-spacing: 0.0071428571em;
                              color: rgba(255, 255, 255, 0.7);
                              ">{{ formData.role }}</span>
+              </v-skeleton-loader>
               </div>
             </div>
           </v-card>
@@ -230,16 +280,16 @@
         showQRStream: false,
         formData: {
           id: 0,
-          teacherId: "DepEd-4657626",
-          firstName: "JOEMY",
-          lastName: "TABINAS",
-          middleName: "D.",
-          dateOfBirth: "SEPTEMBER 1981",
-          address: "Ponong, Bato, Leyte",
-          healthStatus: "Fit to Work",
-          department: "SHS Department",
-          role: "Grade 11-HUMSS Religion",
-          image: require("../assets/joemy.png")
+          teacherId: "",
+          firstName: "",
+          lastName: "",
+          middleName: "",
+          dateOfBirth: "",
+          address: "",
+          healthStatus: "",
+          department: "",
+          role: "",
+          image: require("../assets/image/img_avatar.png")
         },
         scanHistory: {
           userProfileId: 0,
@@ -251,7 +301,8 @@
         noStreamApiSupport: false,
         cameraSwitch: 'front',
         noRearCamera: false,
-        noFrontCamera: false
+        noFrontCamera: false,
+        skeletonLoading: true
       }
     },
     created() {
@@ -295,16 +346,16 @@
               self.showAlert = false
               self.formData = {
                 id: 0,
-                teacherId: "DepEd-4657626",
-                firstName: "JOEMY",
-                lastName: "TABINAS",
-                middleName: "D.",
-                dateOfBirth: "SEPTEMBER 1981",
-                address: "Ponong, Bato, Leyte",
-                healthStatus: "Fit to Work",
-                department: "SHS Department",
-                role: "Grade 11-HUMSS Religion",
-                image: require("../assets/joemy.png")
+                teacherId: "",
+                firstName: "",
+                lastName: "",
+                middleName: "",
+                dateOfBirth: "",
+                address: "",
+                healthStatus: "",
+                department: "",
+                role: "",
+                image: require("../assets/image/img_avatar.png")
               }
               self.scanHistory = {
                 userProfileId: 0,
@@ -332,8 +383,9 @@
         var self = this
         var audio = new Audio(require("../assets/sounds/beep-07.wav"))
         audio.play()
-        this.qrResult = result
-        this.showQRCode = false
+        self.qrResult = result
+        self.showQRCode = false
+        self.skeletonLoading = true
         var scanQRCode = {
           teacherId: result
         }
@@ -357,6 +409,7 @@
           self.formData.department = response.data.department
           self.formData.role = response.data.role
           self.formData.image = 'data:image/png;base64,' + response.data.image
+          self.skeletonLoading = false
         }).catch(error => {
         })
       },
