@@ -1,313 +1,181 @@
 <template> 
-  <v-container
-    id="user-profile"
-    fluid
-    tag="section"
-    style="margin-top: 100px;"
-  >
+  <v-container id="user-profile" fluid tag="section" style="margin-top: 100px;">
     <v-row justify="center">
-        
-  <v-col
-        cols="12"
-        md="11"
-      >
-          <v-data-table
-    :headers="headers"
-    :items="desserts"
-    sort-by="calories"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar
-        flat
-      >
-        <v-toolbar-title>My CRUD</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog
-          v-model="dialog"
-          max-width="500px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="attrs"
-              v-on="on"
-            >
-              New Item
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
+      <v-col cols="12" md="11">
+        <v-data-table :headers="headers" :items="items" sort-by="firstName" :loading="tblLoading" loading-text="Loading... Please wait" class="elevation-1">
+          <template v-slot:top>
+            <v-toolbar flat >
+              <v-card icon="mdi-clipboard-text" :elevation="8" color="#217BD4" class="mb-n6 pa-7" style="top: -25px; margin-right: 1%;">
+                <v-icon color="white" large>mdi-clipboard-text</v-icon>
+              </v-card>
+              <v-toolbar-title>Teacher Profile</v-toolbar-title>
+              <v-divider
+                class="mx-4"
+                inset
+                vertical
+              ></v-divider>
               <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-              >
-                Cancel
+              <v-btn color="primary" dark class="mb-2 mt-1" :loading="btnLoading" @click="newItem()">
+                New Item
               </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.actions="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
-      >
-        mdi-delete
-      </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
-    </template>
-  </v-data-table>
-  </v-col>
+            </v-toolbar>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon
+              medium
+              class="mr-2"
+              @click="editItem(item)"
+            >
+              mdi-pencil
+            </v-icon>
+            <v-icon
+              medium
+              @click="deleteItem(item)"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+          <!-- <template v-slot:actions-extras>
+            <v-slide-x-reverse-transition>
+            <v-tooltip left >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon class="my-0" v-bind="attrs" v-on="on" >
+                  <v-icon>mdi-refresh</v-icon>
+                </v-btn>
+              </template>
+              <span>Refresh form</span>
+            </v-tooltip>
+          </v-slide-x-reverse-transition>
+          </template> -->
+        </v-data-table>
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
   import { mapState, mapActions } from 'vuex'
+  import '../../assets/css/vuetify_material.css'
   export default {
     name: 'AllUsers',
-    //
     data() {
       return {      
-        dialog: false,
+        btnLoading: false,
+        tblLoading: false,
         headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
+          { text: 'Teacher Id', align: 'start', value: 'teacherId' },
+          { text: 'First name', value: 'firstName' },
+          { text: 'Middle name', value: 'middleName' },
+          { text: 'Last name', value: 'lastName' },
+          { text: 'Date of birth', value: 'dateOfBirth' },
+          { text: 'Address', value: 'address' },
+          { text: 'Health status', value: 'healthStatus' },
+          { text: 'Department', value: 'department' },
+          { text: 'Grade / Admin / Principal / Role', value: 'role' },
           { text: 'Actions', value: 'actions', sortable: false },
         ],
-        desserts: [],
-        editedIndex: -1,
-        editedItem: {
-          name: '',
-          calories: 0,
-          fat: 0,
-          carbs: 0,
-          protein: 0,
-        },
-        defaultItem: {
-          name: '',
-          calories: 0,
-          fat: 0,
-          carbs: 0,
-          protein: 0,
-        },
+        items: []
       }
     },
     created(){
       this.initialize()
     },
     computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
+      ...mapState({
+        users: state => state.api.users
+      })
     },
     watch: {
-      dialog (val) {
-        val || this.close()
-      },
     },
     methods: {
-      initialize () {
-        this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-          },
-        ]
+      ...mapActions(['getAllUsers', 'deleteUser']),
+      async initialize () {
+        var self = this
+        self.tblLoading = true
+        await self.getAllUsers().then(response => {
+          var tempItems = []
+          if(response.status === 200){
+            response.data.forEach(user => {
+              const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+              ];
+              const d = new Date(user.dateOfBirth);
+              tempItems.push({
+                id: user.id,
+                teacherId: user.teacherId,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                middleName: user.middleName,
+                dateOfBirth: monthNames[d.getMonth()].toUpperCase() + ' ' + d.getFullYear(),
+                address: user.address,
+                healthStatus: user.healthStatus,
+                department: user.department,
+                role: user.role
+              })
+            });
+            setTimeout(() => {
+              self.items = tempItems
+              self.tblLoading = false
+            }, 500)
+          }
+        })
       },      
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
+        this.$router.push('/user/edit/' + item.id)
       },
-
-      deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+      async deleteItem (item) {
+        var self = this
+        self.$confirm('This will permanently delete the data. Continue?', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              instance.confirmButtonLoading = true;
+              instance.confirmButtonText = 'Loading...';
+              setTimeout(() => {
+                done();
+                setTimeout(() => {
+                  instance.confirmButtonLoading = false;
+                }, 300);
+              }, 1000);
+            } else {
+              done();
+            }
+          }
+        }).then(async() => {
+          self.tblLoading = true
+          await self.deleteUser(item.id).then(response => {
+            if(response.status === 200){
+              setTimeout(() => {
+                const index = self.items.indexOf(item)
+                self.items.splice(index, 1)
+                self.tblLoading = false
+                self.$message({
+                  type: 'success',
+                  message: 'Delete completed'
+                });
+              }, 500)
+            }
+          }).catch(() => {
+            self.$message({
+                message: "An unexpected error occurred",
+                type: "error"
+            })
+          })
+        }).catch(() => {
+          self.$message({
+            type: 'error',
+            message: 'Delete canceled'
+          });
+        });
       },
-
-      close () {
-        this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        } else {
-          this.desserts.push(this.editedItem)
-        }
-        this.close()
+      newItem(){
+        this.btnLoading = true
+        setTimeout(() => {
+          this.$router.push('/user/create')
+          this.btnLoading = false
+        }, 500)
       }
     }
   }

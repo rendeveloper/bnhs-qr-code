@@ -3,6 +3,7 @@
     id="user-profile"
     tag="section"
     style="margin-top: 100px;"
+    v-loading="screenLoading"
   >
     <v-row justify="center">
       <v-col
@@ -12,7 +13,7 @@
         <v-card>
           <v-card :elevation="8" color="#217BD4" class="mb-n6 pa-7" style="width: 98%; top: -30px; margin-left: 1%; margin-right: 1%;">
             <div style="color: #fff;" class="display-2 font-weight-light">
-              Create Profile
+              {{ formData.id === 0 ? 'Create' : 'Edit' }} Profile
             </div>
 
             <div style="color: rgb(255 255 255 / .87);" class="subtitle-1 font-weight-light">
@@ -30,6 +31,14 @@
                   <v-text-field
                     label="Teacher Id"
                     v-model="formData.teacherId"
+                    :error-messages="errorMessages"
+                    ref="teacherId"
+                    :rules="[
+                      value => !!formData.teacherId || 'Required.',
+                      value => (formData.teacherId && formData.teacherId.length >= 3) || 'Min 3 characters',
+                      value => checkTeacherId()
+                    ]"
+                    required
                   />
                 </v-col>
 
@@ -52,6 +61,12 @@
                   <v-text-field
                     label="First Name"
                     v-model="formData.firstName"
+                    ref="firstName"
+                    :rules="[
+                      value => !!formData.firstName || 'Required.',
+                      value => (formData.firstName && formData.firstName.length >= 3) || 'Min 3 characters'
+                    ]"
+                    required
                   />
                 </v-col>
 
@@ -62,6 +77,12 @@
                   <v-text-field
                     label="Last Name"
                     v-model="formData.lastName"
+                    ref="lastName"
+                    :rules="[
+                      value => !!formData.lastName || 'Required.',
+                      value => (formData.lastName && formData.lastName.length >= 3) || 'Min 3 characters'
+                    ]"
+                    required
                   />
                 </v-col>
                 <v-col
@@ -71,6 +92,11 @@
                   <v-text-field
                     label="Middle name"
                     v-model="formData.middleName"
+                    ref="middleName"
+                    :rules="[
+                      value => !!formData.middleName || 'Required.'
+                    ]"
+                    required
                   />
                 </v-col>
 
@@ -94,6 +120,11 @@
                         readonly
                         v-bind="attrs"
                         v-on="on"
+                        ref="dateOfBirth"
+                        :rules="[
+                          value => !!formData.dateOfBirth || 'Required.'
+                        ]"
+                        required
                       ></v-text-field>
                     </template>
                     <v-date-picker v-model="formData.dateOfBirth" @input="menuDate = false">
@@ -111,6 +142,12 @@
                   <v-text-field
                     label="Department"
                     v-model="formData.department"
+                    ref="department"
+                    :rules="[
+                      value => !!formData.department || 'Required.',
+                      value => (formData.department && formData.department.length >= 3) || 'Min 3 characters'
+                    ]"
+                    required
                   />
                 </v-col>
 
@@ -121,6 +158,12 @@
                   <v-text-field
                     label="Grade / Admin / Principal / Role"
                     v-model="formData.role"
+                    ref="role"
+                    :rules="[
+                      value => !!formData.role || 'Required.',
+                      value => (formData.role && formData.role.length >= 3) || 'Min 3 characters'
+                    ]"
+                    required
                   />
                 </v-col>
 
@@ -131,6 +174,12 @@
                   <v-text-field
                     label="Health Status"
                     v-model="formData.healthStatus"
+                    ref="healthStatus"
+                    :rules="[
+                      value => !!formData.healthStatus || 'Required.',
+                      value => (formData.healthStatus && formData.healthStatus.length >= 3) || 'Min 3 characters'
+                    ]"
+                    required
                   />
                 </v-col>
 
@@ -138,6 +187,12 @@
                   <v-text-field
                     label="Adress"
                     v-model="formData.address"
+                    ref="address"
+                    :rules="[
+                      value => !!formData.address || 'Required.',
+                      value => (formData.address && formData.address.length >= 3) || 'Min 3 characters'
+                    ]"
+                    required
                   />
                 </v-col>
 
@@ -154,13 +209,21 @@
                 >
                   <v-btn
                     color="primary"
+                    class="mb-3 mr-3"
+                    :to="'/user/all'"
+                  >
+                    <!-- <v-icon class="mr-1">mdi-content-save</v-icon> -->
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    color="primary"
                     class="mb-3"
                     :loading="loading"
                     :disabled="loading"
                     @click="onSubmit"
                   >
                     <!-- <v-icon class="mr-1">mdi-content-save</v-icon> -->
-                    Save Profile
+                    {{ formData.id === 0 ? 'Save' : 'Update' }} Profile
                   </v-btn>
                 </v-col>
               </v-row>
@@ -223,7 +286,7 @@
               color="primary"
               rounded
               class="mr-0"
-              :disabled="formData.teacherId == '' && formData.firstName == '' && formData.lastName == ''"
+              :disabled="formData.teacherId === '' || formData.firstName === '' || formData.lastName === ''"
               @click="SAVE_QR_CODE"
             >
               Download QR Code
@@ -248,6 +311,7 @@
       return {
         date: new Date().toISOString().substr(0, 10),
         loading: false,
+        screenLoading: false,
         menuDate: false,
         formData: {
           id: 0,
@@ -262,41 +326,143 @@
           role: "",
           image: []
         },
-        imageBase: require("../../assets/image/img_avatar.png")
+        imageBase: require("../../assets/image/img_avatar.png"),
+        teacherRules: [
+          value => !!value || 'Required.',
+          value => (value && value.length >= 3) || 'Min 3 characters'
+        ],
+        formHasErrors: false,
+        errorMessages: ''
       }
     },
+    created(){
+      this.get(this.$route.params.id)
+    },
     methods: {
-      ...mapActions(['saveUser']),
+      ...mapActions(['saveUser', 'getUser', 'updateUser', 'getScanQRCode']),
+      async get(id){
+        var self = this
+        if(id == undefined || id == 0){ 
+          return;
+        }
+        
+        self.screenLoading = true
+        await self.getUser(id).then(response => {
+          if(response.status === 200){
+            self.formData.id = response.data.id
+            self.formData.teacherId = response.data.teacherId
+            self.formData.firstName = response.data.firstName
+            self.formData.lastName = response.data.lastName
+            self.formData.middleName = response.data.middleName
+            self.formData.dateOfBirth = new Date(response.data.dateOfBirth).toISOString().substring(0,10);
+            self.formData.address = response.data.address
+            self.formData.healthStatus = response.data.healthStatus
+            self.formData.department = response.data.department
+            self.formData.role = response.data.role
+            
+            self.imageBase = response.data.image === "" ? self.imageBase : 'data:image/png;base64,' +  response.data.image
+          }
+
+          setTimeout(() => {
+            self.screenLoading = false
+          }, 500)
+        }).catch(error => {
+          self.$message({
+            message: "An unexpected error occurred",
+            type: "error"
+          })
+        })
+      },
       async onSubmit(){
         var self = this
-        self.loading = true
-
-        await self.saveUser(self.formData).then(response => {
-          setTimeout(() =>{
-            self.$message({
-              message: "The profile was saved successfully",
-              type: "success"
-            })
-            self.formData = {
-              id: 0,
-              teacherId: "",
-              firstName: "",
-              lastName: "",
-              middleName: "",
-              dateOfBirth: "",
-              address: "",
-              healthStatus: "",
-              department: "",
-              role: "",
-              image: []
-            }
-            self.imageBase = require("../../assets/image/img_avatar.png")
-            self.$router.push('/user/all')
-            self.loading = false
-          }, 1000)
-        }).catch(error => {
-
+        self.formHasErrors = false
+        self.errorMessages = ''
+        Object.keys(self.formData).forEach(f => {
+          if(f !== 'id' && f !== 'image'){
+            if (!self.formData[f]) self.formHasErrors = true
+            
+            self.$refs[f].validate(true)
+          }
         })
+        if(self.formHasErrors){
+          return;
+        }
+        self.loading = true
+        if(self.formData.id === 0){
+          var chkTeacherId = {
+            teacherId: self.formData.teacherId
+          }
+          await self.getScanQRCode(chkTeacherId).then(response => {
+            if(response.status === 200){
+              self.errorMessages = 'Teacher id already exists'
+              self.loading = false
+            }
+          }).catch(() => {
+          })
+          if(self.errorMessages !== ''){
+            return;
+          }
+
+          await self.saveUser(self.formData).then(response => {
+            setTimeout(() =>{
+              self.$message({
+                message: "The profile was saved successfully",
+                type: "success"
+              })
+              self.formData = {
+                id: 0,
+                teacherId: "",
+                firstName: "",
+                lastName: "",
+                middleName: "",
+                dateOfBirth: "",
+                address: "",
+                healthStatus: "",
+                department: "",
+                role: "",
+                image: []
+              }
+              self.imageBase = require("../../assets/image/img_avatar.png")
+              self.$router.push('/user/all')
+              self.loading = false
+            }, 1000)
+          }).catch(error => {
+            self.$message({
+              message: "An unexpected error occurred",
+              type: "error"
+            })
+          })
+        }else{
+          await self.updateUser(self.formData).then(response => {
+            setTimeout(() =>{
+              self.$message({
+                message: "The profile was saved successfully",
+                type: "success"
+              })
+              self.formData = {
+                id: 0,
+                teacherId: "",
+                firstName: "",
+                lastName: "",
+                middleName: "",
+                dateOfBirth: "",
+                address: "",
+                healthStatus: "",
+                department: "",
+                role: "",
+                image: []
+              }
+              self.imageBase = require("../../assets/image/img_avatar.png")
+              self.$router.push('/user/all')
+              self.loading = false
+            }, 1000)
+          }).catch(error => {
+            self.$message({
+              message: "An unexpected error occurred",
+              type: "error"
+            })
+          })
+        }
       },
       SAVE_QR_CODE(){
         var self = this
@@ -357,7 +523,18 @@
             reader.readAsArrayBuffer(file);
             //reader.readAsDataURL(file);
         });
+      },
+      checkTeacherId(){
+        this.errorMessages = ''
+        return true
       }
     }
   }
 </script>
+<style>
+  .el-loading-mask{
+    margin: -50px !important;
+    background-color: rgba(238,238,238,.9) !important;
+    z-index: auto !important;
+  }
+</style>

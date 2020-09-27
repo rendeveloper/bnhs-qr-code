@@ -12,13 +12,23 @@ const mutations = {
 };
 
 const actions = {
+  getUser({ commit }, id){
+    return axios.get(`${state.baseUrl}/api/user/${id}`).then(handleResponse).catch(error => {
+      throw new Error(`API ${error}`);
+    });
+  },
   getAllUsers({ commit }) {
+    return axios.get(`${state.baseUrl}/api/user`).then(handleResponse).catch(error => {
+      throw new Error(`API ${error}`);
+    });
+  },
+  /* getAllUsers({ commit }) {
     return axios.get(`${state.baseUrl}/api/user`).then(handleResponse).then(response => {
         commit('GET_ALL_USERS', response.data);
     }).catch(error => {
       throw new Error(`API ${error}`);
     });
-  },
+  }, */
   getScanQRCode({ commit }, scanQRCode) {
     return axios.post(`${state.baseUrl}/api/user/scan`, scanQRCode).then(handleResponse).catch(error => {
       throw new Error(`API ${error}`);
@@ -31,6 +41,16 @@ const actions = {
   },
   saveUser({ commit }, user){
     return axios.post(`${state.baseUrl}/api/User`, user).then(handleResponse).catch(error => {
+      throw new Error(`API ${error}`);
+    });
+  },
+  updateUser({ commit }, user){
+    return axios.put(`${state.baseUrl}/api/User/${user.id}`, user).then(handleResponse).catch(error => {
+      throw new Error(`API ${error}`);
+    });
+  },
+  deleteUser({ commit }, id){
+    return axios.delete(`${state.baseUrl}/api/User/${id}`).then(handleResponse).catch(error => {
       throw new Error(`API ${error}`);
     });
   }

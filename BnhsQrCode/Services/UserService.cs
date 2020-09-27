@@ -46,7 +46,7 @@ namespace BnhsQrCode.Services
         public User GetByTeacherId(string teacherId)
         {
             var user = _session.Query<User>()
-                .FirstOrDefault(c => c.TeacherId == teacherId);
+                .FirstOrDefault(c => c.TeacherId.ToLower() == teacherId.ToLower());
 
             return user;
         }
