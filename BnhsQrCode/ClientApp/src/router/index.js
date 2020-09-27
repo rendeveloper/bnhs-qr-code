@@ -24,6 +24,11 @@ Vue.use(VueRouter)
     component: UserCreate,
   },
   {
+    name: 'User Edit',
+    path: '/user/edit/:id',
+    component: UserCreate
+  },
+  {
     name: 'All Users',
     path: '/user/all',
     component: AllUsers,

@@ -34,9 +34,17 @@ namespace BnhsQrCode.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var user = _userService.Users.Single(x => x.Id == id);
-            return Ok(user);
+            try
+            {
+                var user = _userService.Users.Single(x => x.Id == id);
+                return Ok(user);
+            }
+            catch
+            {
+                return Ok(false);
+            }
         }
+
         // POST: api/User/Scan
         [HttpPost]
         [Route("Scan")]
@@ -44,12 +52,12 @@ namespace BnhsQrCode.Controllers
         {
             try
             {
-                var user = _userService.Users.Single(x => x.TeacherId.ToLower() == scan.TeacherId.ToLower());
+                var user = _userService.GetByTeacherId(scan.TeacherId);
                 return Ok(user);
             }
-            catch
+            catch (Exception e)
             {
-                return Ok(false);
+                return Ok(e);
             }
         }
 
@@ -93,23 +101,23 @@ namespace BnhsQrCode.Controllers
 
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] User user)
+        public async Task<IActionResult> Put(int id, [FromBody] UserDTO userDto)
         {
-            var userModel = await _userService.Users.SingleAsync(x => x.Id == user.Id);
+            var userModel = await _userService.Users.SingleAsync(x => x.Id == userDto.Id);
             try
             {
                 _userService.BeginTransaction();
 
-                userModel.TeacherId = user.TeacherId;
-                userModel.FirstName = user.FirstName;
-                userModel.LastName = user.LastName;
-                userModel.MiddleName = user.MiddleName;
-                userModel.DateOfBirth = user.DateOfBirth;
-                userModel.Address = user.Address;
-                userModel.HealthStatus = user.HealthStatus;
-                userModel.Department = user.Department;
-                userModel.Role = user.Role;
-                userModel.Image = user.Image;
+                userModel.TeacherId = userDto.TeacherId;
+                userModel.FirstName = userDto.FirstName;
+                userModel.LastName = userDto.LastName;
+                userModel.MiddleName = userDto.MiddleName;
+                userModel.DateOfBirth = userDto.DateOfBirth;
+                userModel.Address = userDto.Address;
+                userModel.HealthStatus = userDto.HealthStatus;
+                userModel.Department = userDto.Department;
+                userModel.Role = userDto.Role;
+                userModel.Image = userDto.Image.Length == 0 ? userModel.Image : userDto.Image;
 
                 await _userService.Save(userModel);
                 await _userService.Commit();

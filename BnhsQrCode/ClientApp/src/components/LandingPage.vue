@@ -40,18 +40,7 @@
               </div> -->
               <div style="height: 350px; width: 350px;">
                 
-                <p class="error">{{ error }}</p>
-                <p class="decode-result">Last result: <b>{{ qrResult }}</b></p>
-
-                <div v-if="showQRStream">
-                  <p class="error" v-if="noFrontCamera">
-                    You don't seem to have a front camera on your device
-                  </p>
-
-                  <p class="error" v-if="noRearCamera">
-                    You don't seem to have a rear camera on your device
-                  </p>
-                </div>
+                <p class="decode-result mt-4">Last result: <b>{{ qrResult }}</b></p>
                 
                 <vue-qr-reader 
                   v-if="showQRStream"
@@ -75,6 +64,25 @@
                   >
                     Start
                   </v-btn>
+                  <v-slide-x-reverse-transition>
+                    <v-tooltip
+                      v-if="showQRStream"
+                      bottom
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          class="my-0"
+                          v-bind="attrs"
+                          @click="resetForm"
+                          v-on="on"
+                        >
+                          <v-icon>mdi-refresh</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Refresh QR code scan</span>
+                    </v-tooltip>
+                  </v-slide-x-reverse-transition>
               </div>
             </v-row>
           </v-card>
@@ -282,7 +290,6 @@
         loader: null,
         loading: false,
         qrResult: '',
-        error: '',
         showQRCode: true,
         showQRStream: false,
         formData: {
@@ -305,9 +312,6 @@
           CreatedByDateTime: new Date()
         },
         showAlert: false,
-        noStreamApiSupport: false,
-        noRearCamera: false,
-        noFrontCamera: false,
         skeletonLoading: true
       }
     },
@@ -345,7 +349,7 @@
         await self.saveScanHistory(self.scanHistory).then(response => {
           self.loader = 'loading'
           setTimeout(() =>{
-            self.showQRStream = false
+            self.showQRStream = true
             self.showQRCode = true
             self.showAlert = true
             setTimeout(() => {
@@ -369,18 +373,19 @@
                 timeStatus: "",
                 CreatedByDateTime: new Date()
               }
-            }, 1000)
-          }, 2000)
+            }, 500)
+          }, 1000)
         }).catch(error => {
-
+          self.$message({
+            message: "An unexpected error occurred",
+            type: "error"
+          })
         })
+        setTimeout(() => (this.showQRStream = false), 15000)
       },
       onStartQR(){
         this.loader = 'loading'
         setTimeout(() => (this.showQRStream = true), 2000)
-      },
-      qrStart(){
-        this.showQRStream = true
       },
       formatDate() {
           var newDate = new Date();
@@ -410,20 +415,22 @@
           return (value < 10) ? "0" + value : value;
       },
       async codeScanned (result) {
-        debugger
         if(result === undefined || result === "" || result === null){
           return;
         }
         var self = this
         var audio = new Audio(require("../assets/sounds/beep-07.wav"))
-        audio.play()
+       
         self.qrResult = result
-        self.showQRCode = false
         self.skeletonLoading = true
+        self.loading = true
         var scanQRCode = {
           teacherId: result
         }
         await self.getScanQRCode(scanQRCode).then(response => {
+          audio.play()
+          self.showQRCode = false
+          self.loading = false
           const monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
           ];
@@ -442,9 +449,13 @@
           self.formData.healthStatus = response.data.healthStatus
           self.formData.department = response.data.department
           self.formData.role = response.data.role
-          self.formData.image = 'data:image/png;base64,' + response.data.image
+          self.formData.image = response.data.image === "" ? self.formData.image : 'data:image/png;base64,' +  response.data.image
           self.skeletonLoading = false
-        }).catch(error => {
+        }).catch(() => {
+          self.$message({
+            message: "An unexpected error occurred",
+            type: "error"
+          })
         })
       },
       errorScanned(error) {
@@ -468,6 +479,12 @@
               this.errorMessage = 'UNKNOWN ERROR: ' + error.message
           }
           console.error(this.errorMessage);
+      },
+      resetForm(){
+        this.showQRStream = false
+        setTimeout(() => {
+          this.showQRStream = true
+        }, 0)
       }
     }
   }
@@ -477,7 +494,7 @@
    border-radius: 5px;
  }
  .alert-fixed {
-    position:fixed; 
+    position: absolute; 
     top: 80px; 
     z-index:9999; 
 }
