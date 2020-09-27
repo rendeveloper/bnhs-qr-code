@@ -43,7 +43,6 @@
                 <p class="error">{{ error }}</p>
                 <p class="decode-result">Last result: <b>{{ qrResult }}</b></p>
 
-                <!-- <qrcode-stream v-if="showQRStream" :track="paintDots" @decode="onDecode" @init="onInit" /> -->
                 <div v-if="showQRStream">
                   <p class="error" v-if="noFrontCamera">
                     You don't seem to have a front camera on your device
@@ -53,15 +52,20 @@
                     You don't seem to have a rear camera on your device
                   </p>
                 </div>
-                <qrcode-drop-zone v-if="showQRStream" @decode="onDecode" @init="logErrors">
-                  <qrcode-stream style="height: 350px; width: 350px;" :camera="cameraSwitch" @decode="onDecode" :track="paintDots" @init="onInit">
-                    <button style="width: 30px; height: 30px; float: left; top: 10px; left: 10px;" @click="switchCamera()">
-                      <img style="width: 40px; height: 40px;" :src="require('../assets/switch-camera-100.png')" alt="switch camera">
-                    </button>
-                  </qrcode-stream>
-                </qrcode-drop-zone>
-
-                <qrcode-capture v-if="noStreamApiSupport" @decode="onDecode" />
+                
+                <vue-qr-reader 
+                  v-if="showQRStream"
+                  ref="qr"
+                  v-on:code-scanned="codeScanned"
+                  v-on:error-captured="errorScanned"
+                  :stop-on-scanned="true"
+                  :draw-on-found="true"
+                  line-color="#00FF00"
+                  :line-width="5"
+                  :video-height="350"
+                  :video-width="350"
+                  :responsive="true">
+                </vue-qr-reader>
                 <v-btn v-if="!showQRStream"
                     class="ma-2"
                     :loading="loading"
@@ -262,10 +266,13 @@
 </template>
 
 <script>
+  import VueQrReader from 'vue-qr-reader/dist/lib/vue-qr-reader.umd.js';
   import { mapState, mapActions } from 'vuex'
   export default {
     name: 'LandingPage',
-
+    components: {
+      VueQrReader
+    },
     data() {
       return {
         rules: [
@@ -299,7 +306,6 @@
         },
         showAlert: false,
         noStreamApiSupport: false,
-        cameraSwitch: 'front',
         noRearCamera: false,
         noFrontCamera: false,
         skeletonLoading: true
@@ -376,7 +382,35 @@
       qrStart(){
         this.showQRStream = true
       },
-      async onDecode (result) {
+      formatDate() {
+          var newDate = new Date();
+
+          var sMonth = this.padValue(newDate.getMonth() + 1);
+          var sDay = this.padValue(newDate.getDate());
+          var sYear = newDate.getFullYear();
+          var sHour = newDate.getHours();
+          var sMinute = this.padValue(newDate.getMinutes());
+          var sAMPM = "AM";
+
+          var iHourCheck = parseInt(sHour);
+
+          if (iHourCheck > 12) {
+              sAMPM = "PM";
+              sHour = iHourCheck - 12;
+          }
+          else if (iHourCheck === 0) {
+              sHour = "12";
+          }
+
+          sHour = this.padValue(sHour);
+
+          return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
+      },
+      padValue(value) {
+          return (value < 10) ? "0" + value : value;
+      },
+      async codeScanned (result) {
+        debugger
         if(result === undefined || result === "" || result === null){
           return;
         }
@@ -413,100 +447,27 @@
         }).catch(error => {
         })
       },
-      async onInit (promise) {
-        try {
-          await promise
-        } catch (error) {
-
-          if (error.name === 'NotAllowedError') {
-            this.error = "ERROR: you need to grant camera access permisson"
-          } else if (error.name === 'NotFoundError') {
-            this.error = "ERROR: no camera on this device"
-          } else if (error.name === 'NotSupportedError') {
-            this.error = "ERROR: secure context required (HTTPS, localhost)"
-          } else if (error.name === 'NotReadableError') {
-            this.error = "ERROR: is the camera already in use?"
-          } else if (error.name === 'OverconstrainedError') {
-            this.error = "ERROR: installed cameras are not suitable"
-          } else if (error.name === 'StreamApiNotSupportedError') {
-            this.noStreamApiSupport = true
-            this.error = "ERROR: Stream API is not supported in this browser"
+      errorScanned(error) {
+          switch (error.name) {
+              case 'NotAllowedError':
+              this.errorMessage = 'Camera permission denied.'
+              break;
+              case 'NotFoundError':
+              this.errorMessage = 'There is no connected camera.'
+              break;
+              case 'NotSupportedError':
+              this.errorMessage = 'Seems like this page is served in non-secure context.'
+              break;
+              case 'NotReadableError':
+              this.errorMessage = 'Couldn\'t access your camera. Is it already in use?'
+              break;
+              case 'OverconstrainedError':
+              this.errorMessage = 'Constraints don\'t match any installed camera.'
+              break;
+              default:
+              this.errorMessage = 'UNKNOWN ERROR: ' + error.message
           }
-          
-          const triedFrontCamera = this.cameraSwitch === 'front'
-          const triedRearCamera = this.cameraSwitch === 'rear'
-
-          const cameraMissingError = error.name === 'OverconstrainedError'
-
-          if (triedRearCamera && cameraMissingError) {
-            this.noRearCamera = true
-          }
-
-          if (triedFrontCamera && cameraMissingError) {
-            this.noFrontCamera = true
-          }
-
-          console.error(error)
-        }
-      },
-      logErrors (promise) {
-        promise.catch(console.error)
-      },
-      paintDots(location, ctx) {
-        const {
-          topLeftFinderPattern,
-          topRightFinderPattern,
-          bottomLeftFinderPattern
-        } = location
-
-        const pointArray = [
-          topLeftFinderPattern,
-          topRightFinderPattern,
-          bottomLeftFinderPattern
-        ]
-
-        ctx.fillStyle = '#60DB01'
-
-        pointArray.forEach(({ x, y }) => {
-          ctx.fillRect(x - 5, y - 5, 10, 10)
-        })
-      },
-      formatDate() {
-          var newDate = new Date();
-
-          var sMonth = this.padValue(newDate.getMonth() + 1);
-          var sDay = this.padValue(newDate.getDate());
-          var sYear = newDate.getFullYear();
-          var sHour = newDate.getHours();
-          var sMinute = this.padValue(newDate.getMinutes());
-          var sAMPM = "AM";
-
-          var iHourCheck = parseInt(sHour);
-
-          if (iHourCheck > 12) {
-              sAMPM = "PM";
-              sHour = iHourCheck - 12;
-          }
-          else if (iHourCheck === 0) {
-              sHour = "12";
-          }
-
-          sHour = this.padValue(sHour);
-
-          return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
-      },
-      padValue(value) {
-          return (value < 10) ? "0" + value : value;
-      },
-      switchCamera () {
-        switch (this.cameraSwitch) {
-          case 'front':
-            this.cameraSwitch = 'rear'
-            break
-          case 'rear':
-            this.cameraSwitch = 'front'
-            break
-        }
+          console.error(this.errorMessage);
       }
     }
   }
