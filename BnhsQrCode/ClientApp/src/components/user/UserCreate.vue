@@ -240,7 +240,7 @@
                 <v-img
                 alt="Image Teacher"
                 contain
-                :src="imageBase"
+                :src="formData.image"
                 transition="scale-transition"
                 
               />
@@ -324,9 +324,17 @@
           healthStatus: "",
           department: "",
           role: "",
-          image: []
+          image: require("../../assets/image/img_avatar.png"),
+          imageDto: {
+            id: 0,
+            fileName: "",
+            originalFileName: "",
+            fileSize: 0,
+            uploadDate: new Date(),
+            UserProfileId: 0,
+            dataBytes: []
+          }
         },
-        imageBase: require("../../assets/image/img_avatar.png"),
         teacherRules: [
           value => !!value || 'Required.',
           value => (value && value.length >= 3) || 'Min 3 characters'
@@ -339,7 +347,7 @@
       this.get(this.$route.params.id)
     },
     methods: {
-      ...mapActions(['saveUser', 'getUser', 'updateUser', 'getScanQRCode']),
+      ...mapActions(['saveUser', 'getUser', 'updateUser', 'getScanQRCode', 'saveImageDetails']),
       async get(id){
         var self = this
         if(id == undefined || id == 0){ 
@@ -359,8 +367,8 @@
             self.formData.healthStatus = response.data.healthStatus
             self.formData.department = response.data.department
             self.formData.role = response.data.role
-            
-            self.imageBase = response.data.image === "" ? self.imageBase : 'data:image/png;base64,' +  response.data.image
+           
+            self.formData.image = response.data.image === "" ? require("../../assets/image/img_avatar.png") : '/images/' + response.data.image
           }
 
           setTimeout(() => {
@@ -377,8 +385,9 @@
         var self = this
         self.formHasErrors = false
         self.errorMessages = ''
+        
         Object.keys(self.formData).forEach(f => {
-          if(f !== 'id' && f !== 'image'){
+          if(f !== 'id' && f !== 'image' && f !== 'imageDto'){
             if (!self.formData[f]) self.formHasErrors = true
             
             self.$refs[f].validate(true)
@@ -388,22 +397,8 @@
           return;
         }
         self.loading = true
-        if(self.formData.id === 0){
-          var chkTeacherId = {
-            teacherId: self.formData.teacherId
-          }
-          await self.getScanQRCode(chkTeacherId).then(response => {
-            if(response.status === 200){
-              self.errorMessages = 'Teacher id already exists'
-              self.loading = false
-            }
-          }).catch(() => {
-          })
-          if(self.errorMessages !== ''){
-            return;
-          }
-
-          await self.saveUser(self.formData).then(response => {
+        
+        var resetForm = function(){
             setTimeout(() =>{
               self.$message({
                 message: "The profile was saved successfully",
@@ -420,12 +415,54 @@
                 healthStatus: "",
                 department: "",
                 role: "",
-                image: []
+                image: require("../../assets/image/img_avatar.png"),
+                imageDto: {
+                  id: 0,
+                  fileName: "",
+                  originalFileName: "",
+                  fileSize: 0,
+                  uploadDate: new Date(),
+                  UserProfileId: 0,
+                  dataBytes: []
+                }
               }
-              self.imageBase = require("../../assets/image/img_avatar.png")
+              
               self.$router.push('/user/all')
               self.loading = false
-            }, 1000)
+            }, 500)
+        }
+        if(self.formData.id === 0){
+          var chkTeacherId = {
+            teacherId: self.formData.teacherId
+          }
+          await self.getScanQRCode(chkTeacherId).then(response => {
+            if(response.status === 200 && response.data){
+              self.errorMessages = 'Teacher id already exists'
+              self.loading = false
+            }
+          }).catch(() => {
+            
+          })
+          if(self.errorMessages !== ''){
+            return;
+          }
+
+          await self.saveUser(self.formData).then(async(response) => {
+              var payload = {
+                id: self.formData.imageDto.id,
+                fileName: self.formData.imageDto.fileName,
+                originalFileName: self.formData.imageDto.originalFileName,
+                fileSize: self.formData.imageDto.fileSize,
+                uploadDate:self.formData.imageDto.uploadDate,
+                UserProfileId: response.data.id
+              }
+              if(response.data.image === "" && self.formData.imageDto.fileSize === 0){
+                  resetForm();
+              }else{
+                await self.saveImageDetails(payload).then(x => {
+                  resetForm();
+                })
+              }
           }).catch(error => {
             self.$message({
               message: "An unexpected error occurred",
@@ -433,29 +470,22 @@
             })
           })
         }else{
-          await self.updateUser(self.formData).then(response => {
-            setTimeout(() =>{
-              self.$message({
-                message: "The profile was saved successfully",
-                type: "success"
+          await self.updateUser(self.formData).then(async(response) => {
+            var payload = {
+              id: self.formData.imageDto.id,
+              fileName: self.formData.imageDto.fileName,
+              originalFileName: self.formData.imageDto.originalFileName,
+              fileSize: self.formData.imageDto.fileSize,
+              uploadDate:self.formData.imageDto.uploadDate,
+              UserProfileId: response.data.id
+            }
+            if(response.data.image === "" && self.formData.imageDto.fileSize === 0){
+                resetForm();
+            }else{
+              await self.saveImageDetails(payload).then(x => {
+                resetForm();
               })
-              self.formData = {
-                id: 0,
-                teacherId: "",
-                firstName: "",
-                lastName: "",
-                middleName: "",
-                dateOfBirth: "",
-                address: "",
-                healthStatus: "",
-                department: "",
-                role: "",
-                image: []
-              }
-              self.imageBase = require("../../assets/image/img_avatar.png")
-              self.$router.push('/user/all')
-              self.loading = false
-            }, 1000)
+            }
           }).catch(error => {
             self.$message({
               message: "An unexpected error occurred",
@@ -485,9 +515,20 @@
           return;
 
         let customJsonFiles = await this.getFiles(files);
-        
-        self.formData.image = customJsonFiles.bytes
-        self.imageBase = 'data:image/png;base64,' +  customJsonFiles.base64String
+
+        //self.formData.image = customJsonFiles.bytes
+        self.formData.image = 'data:image/png;base64,' +  customJsonFiles.base64String
+
+        //self.imageBase = 'data:image/png;base64,' +  customJsonFiles.base64String
+        self.formData.imageDto = {
+          id: 0,
+          fileName: customJsonFiles.fileName + '.' + customJsonFiles.originalFileName.split('.').pop(),
+          originalFileName: customJsonFiles.originalFileName,
+          fileSize: customJsonFiles.fileSize,
+          uploadDate: customJsonFiles.uploadDate,
+          UserProfileId: 0,
+          dataBytes: customJsonFiles.bytes
+        }
       },
       getFiles(files) {
           return this.getFile(files[0]);

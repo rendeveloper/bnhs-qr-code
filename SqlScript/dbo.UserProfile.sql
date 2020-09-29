@@ -1,7 +1,7 @@
 USE [bnhs-qr-code-Database]
 GO
 
-/****** Object:  Table [dbo].[UserProfile]    Script Date: 9/18/2020 2:25:34 AM ******/
+/****** Object:  Table [dbo].[UserProfile]    Script Date: 9/30/2020 2:05:30 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19,7 +19,7 @@ CREATE TABLE [dbo].[UserProfile](
 	[HealthStatus] [varchar](50) NOT NULL,
 	[Department] [varchar](50) NOT NULL,
 	[Role] [varchar](50) NOT NULL,
-	[Image] [varbinary](max) NOT NULL,
+	[Image] [varchar](max) NOT NULL,
  CONSTRAINT [PK_UserProfile] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -34,5 +34,4 @@ GO
 
 ALTER TABLE [dbo].[UserProfile] CHECK CONSTRAINT [FK_UserProfile_UserProfile]
 GO
-
 

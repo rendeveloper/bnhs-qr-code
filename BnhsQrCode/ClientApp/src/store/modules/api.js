@@ -53,6 +53,16 @@ const actions = {
     return axios.delete(`${state.baseUrl}/api/User/${id}`).then(handleResponse).catch(error => {
       throw new Error(`API ${error}`);
     });
+  },
+  saveImageDetails({ commit }, image){
+    return axios.post(`${state.baseUrl}/api/UserImageFile`, image).then(handleResponse).catch(error => {
+      throw new Error(`API ${error}`);
+    });
+  },
+  updateImageDetails({ commit }, image){
+    return axios.put(`${state.baseUrl}/api/UserImageFile/${image.id}`, image).then(handleResponse).catch(error => {
+      throw new Error(`API ${error}`);
+    });
   }
 };
 

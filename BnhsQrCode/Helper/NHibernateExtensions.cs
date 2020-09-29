@@ -28,7 +28,8 @@ namespace BnhsQrCode.Helper
                     })
                     .Mappings(m => m.FluentMappings
                     .AddFromAssemblyOf<UserMap>()
-                    .AddFromAssemblyOf<ScanHistoryMap>())
+                    .AddFromAssemblyOf<ScanHistoryMap>()
+                    .AddFromAssemblyOf<UserImageFileMap>())
                     .BuildSessionFactory();
             });
 
@@ -40,6 +41,7 @@ namespace BnhsQrCode.Helper
             );
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IScanHistoryService, ScanHistoryService>();
+            services.AddScoped<IUserImageFileService, UserImageFileService>();
 
             return services;
         }

@@ -449,7 +449,7 @@
           self.formData.healthStatus = response.data.healthStatus
           self.formData.department = response.data.department
           self.formData.role = response.data.role
-          self.formData.image = response.data.image === "" ? self.formData.image : 'data:image/png;base64,' +  response.data.image
+          self.formData.image = response.data.image === "" ? require("../assets/image/img_avatar.png") : '/images/' +  response.data.image
           self.skeletonLoading = false
         }).catch(() => {
           self.$message({

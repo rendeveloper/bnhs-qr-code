@@ -145,7 +145,7 @@
           }
         }).then(async() => {
           self.tblLoading = true
-          await self.deleteUser(item.id).then(response => {
+          await self.deleteUser(item.id).then(async (response) => {
             if(response.status === 200){
               setTimeout(() => {
                 const index = self.items.indexOf(item)

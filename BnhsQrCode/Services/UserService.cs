@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BnhsQrCode.Abstracts;
 using BnhsQrCode.Model;
+using BnhsQrCode.Model.DTO;
+using Microsoft.AspNetCore.Hosting;
 using NHibernate;
 
 namespace BnhsQrCode.Services
@@ -12,10 +15,14 @@ namespace BnhsQrCode.Services
     {
         private readonly ISession _session;
         private ITransaction _transaction;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IUserImageFileService _userImageFileService;
 
-        public UserService(ISession session)
+        public UserService(ISession session, IHostingEnvironment hostingEnvironment, IUserImageFileService userImageFileService)
         {
             _session = session;
+            _hostingEnvironment = hostingEnvironment;
+            _userImageFileService = userImageFileService;
         }
         public IQueryable<User> Users => _session.Query<User>();
 
@@ -58,7 +65,45 @@ namespace BnhsQrCode.Services
 
         public async Task Delete(User entity)
         {
+            await _userImageFileService.DeleteFile(entity.Image);
             await _session.DeleteAsync(entity);
+        }
+
+
+
+        public bool Upload(ImageDTO imageDto)
+        {
+            try
+            {
+                if (imageDto == null || imageDto.DataBytes.Length == 0) return false;
+
+                string basePath = _hostingEnvironment.ContentRootPath + $"{Path.DirectorySeparatorChar}UploadedFiles";
+
+                if (!Directory.Exists(basePath))
+                {
+                    Directory.CreateDirectory(basePath); //Create directory if it doesn't exist
+                }
+
+                if (imageDto.Id == 0)
+                {
+                    //set the image path
+                    string attachmentPath = Path.Combine(basePath, imageDto.FileName);
+
+                    byte[] attachmentBytes = imageDto.DataBytes;
+
+                    File.WriteAllBytes(attachmentPath, attachmentBytes);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

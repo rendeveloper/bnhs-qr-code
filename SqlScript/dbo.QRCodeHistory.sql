@@ -1,7 +1,7 @@
 USE [bnhs-qr-code-Database]
 GO
 
-/****** Object:  Table [dbo].[QRCodeHistory]    Script Date: 9/18/2020 2:27:45 AM ******/
+/****** Object:  Table [dbo].[QRCodeHistory]    Script Date: 9/30/2020 2:04:47 AM ******/
 SET ANSI_NULLS ON
 GO
 

@@ -17,10 +17,12 @@ namespace BnhsQrCode.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IUserImageFileService _userImageFileService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IUserImageFileService userImageFileService)
         {
             _userService = userService;
+            _userImageFileService = userImageFileService;
         }
         // GET: api/User
         [HttpGet]
@@ -53,6 +55,8 @@ namespace BnhsQrCode.Controllers
             try
             {
                 var user = _userService.GetByTeacherId(scan.TeacherId);
+                if (user == null) return Ok(false);
+
                 return Ok(user);
             }
             catch (Exception e)
@@ -71,20 +75,22 @@ namespace BnhsQrCode.Controllers
 
                 var userModel = new User
                 {
-                    TeacherId = userDto.TeacherId,
-                    FirstName = userDto.FirstName,
-                    LastName = userDto.LastName,
-                    MiddleName = userDto.MiddleName,
+                    TeacherId = userDto.TeacherId.Trim(),
+                    FirstName = userDto.FirstName.ToUpper().Trim(),
+                    LastName = userDto.LastName.ToUpper().Trim(),
+                    MiddleName = userDto.MiddleName.ToUpper().Trim(),
                     DateOfBirth = userDto.DateOfBirth,
-                    Address = userDto.Address,
-                    HealthStatus = userDto.HealthStatus,
-                    Department = userDto.Department,
-                    Role = userDto.Role,
-                    Image = userDto.Image
+                    Address = userDto.Address.Trim(),
+                    HealthStatus = userDto.HealthStatus.Trim(),
+                    Department = userDto.Department.Trim(),
+                    Role = userDto.Role.Trim(),
+                    Image = Upload(userDto.ImageDTO) ? userDto.ImageDTO.FileName : ""
                 };
 
                 await _userService.Save(userModel);
                 await _userService.Commit();
+
+                return Ok(userModel);
             }
             catch
             {
@@ -96,7 +102,6 @@ namespace BnhsQrCode.Controllers
             {
                 _userService.CloseTransaction();
             }
-            return Ok(true);
         }
 
         // PUT: api/User/5
@@ -108,16 +113,18 @@ namespace BnhsQrCode.Controllers
             {
                 _userService.BeginTransaction();
 
-                userModel.TeacherId = userDto.TeacherId;
-                userModel.FirstName = userDto.FirstName;
-                userModel.LastName = userDto.LastName;
-                userModel.MiddleName = userDto.MiddleName;
+                await _userImageFileService.DeleteFile(userModel.Image);
+
+                userModel.TeacherId = userDto.TeacherId.Trim();
+                userModel.FirstName = userDto.FirstName.ToUpper().Trim();
+                userModel.LastName = userDto.LastName.ToUpper().Trim();
+                userModel.MiddleName = userDto.MiddleName.ToUpper().Trim();
                 userModel.DateOfBirth = userDto.DateOfBirth;
-                userModel.Address = userDto.Address;
-                userModel.HealthStatus = userDto.HealthStatus;
-                userModel.Department = userDto.Department;
-                userModel.Role = userDto.Role;
-                userModel.Image = userDto.Image.Length == 0 ? userModel.Image : userDto.Image;
+                userModel.Address = userDto.Address.Trim();
+                userModel.HealthStatus = userDto.HealthStatus.Trim();
+                userModel.Department = userDto.Department.Trim();
+                userModel.Role = userDto.Role.Trim();
+                userModel.Image = userDto.ImageDTO.DataBytes.Length == 0 ? userModel.Image : Upload(userDto.ImageDTO) ? userDto.ImageDTO.FileName : "";
 
                 await _userService.Save(userModel);
                 await _userService.Commit();
@@ -159,6 +166,14 @@ namespace BnhsQrCode.Controllers
                 _userService.CloseTransaction();
             }
             return Ok(true);
+        }
+
+        // POST: api/User/Upload
+        //[HttpPost]
+        //[Route("Upload")]
+        private bool Upload([FromBody] ImageDTO imageDto)
+        {
+          return _userService.Upload(imageDto);
         }
     }
 }

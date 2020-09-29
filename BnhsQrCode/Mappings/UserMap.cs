@@ -21,7 +21,7 @@ namespace BnhsQrCode.Mappings
             Map(x => x.HealthStatus).Not.Nullable();
             Map(x => x.Department).Not.Nullable();
             Map(x => x.Role).Not.Nullable();
-            Map(x => x.Image).Length(int.MaxValue).Not.Nullable();
+            Map(x => x.Image).Not.Nullable();//.Length(int.MaxValue).Not.Nullable();
             Table("UserProfile");
         }
     }

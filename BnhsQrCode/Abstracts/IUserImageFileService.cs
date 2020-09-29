@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BnhsQrCode.Model;
-using BnhsQrCode.Model.DTO;
 
 namespace BnhsQrCode.Abstracts
 {
-    public interface IUserService
+    public interface IUserImageFileService
     {
         void BeginTransaction();
         Task Commit();
         Task Rollback();
         void CloseTransaction();
-        Task Save(User entity);
-        Task Delete(User entity);
-        User GetByTeacherId(string teacherId);
+        Task Save(UserImageFile entity);
+        Task Delete(UserImageFile entity);
+        UserImageFile GetByUserId(int id);
 
-        IQueryable<User> Users { get; }
-        bool Upload(ImageDTO imageDto);
+        IQueryable<UserImageFile> UserImageFile { get; }
+        Task DeleteFile(string fileName);
     }
 }
