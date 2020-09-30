@@ -1,7 +1,7 @@
 USE [bnhs-qr-code-Database]
 GO
 
-/****** Object:  Table [dbo].[UserProfile]    Script Date: 9/30/2020 2:05:30 AM ******/
+/****** Object:  Table [dbo].[UserProfile]    Script Date: 9/30/2020 2:33:33 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -26,12 +26,5 @@ CREATE TABLE [dbo].[UserProfile](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
-GO
-
-ALTER TABLE [dbo].[UserProfile]  WITH CHECK ADD  CONSTRAINT [FK_UserProfile_UserProfile] FOREIGN KEY([Id])
-REFERENCES [dbo].[UserProfile] ([Id])
-GO
-
-ALTER TABLE [dbo].[UserProfile] CHECK CONSTRAINT [FK_UserProfile_UserProfile]
 GO
 
