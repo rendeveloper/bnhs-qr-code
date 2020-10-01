@@ -198,7 +198,7 @@
                   style="width: 80px; margin-top: -20px;"
                   v-model="scanHistory.timeStatus"
                 ></v-select>
-                <span style="color: rgb(0 0 0 / 60%); float: right; margin-top: -45px; margin-right: 40px;">{{ formatDate() }}</span>
+                <span style="color: rgb(0 0 0 / 60%); float: right; margin-top: -45px; margin-right: 40px;">{{ displayDate }}</span>
               </div>
             </v-col>
           </v-row>
@@ -312,7 +312,9 @@
           CreatedByDateTime: new Date()
         },
         showAlert: false,
-        skeletonLoading: true
+        skeletonLoading: true,
+        displayDate: "",
+        getOriginalTime: ""
       }
     },
     created() {
@@ -346,6 +348,7 @@
 
         var self = this
         self.scanHistory.userProfileId = self.formData.id
+        self.scanHistory.CreatedByDateTime = self.getOriginalTime
         await self.saveScanHistory(self.scanHistory).then(response => {
           self.loader = 'loading'
           setTimeout(() =>{
@@ -373,6 +376,8 @@
                 timeStatus: "",
                 CreatedByDateTime: new Date()
               }
+              self.getOriginalTime = ""
+              self.displayDate = ""
             }, 500)
           }, 1000)
         }).catch(error => {
@@ -388,18 +393,20 @@
         setTimeout(() => (this.showQRStream = true), 2000)
       },
       formatDate() {
-          var newDate = new Date();
-
-          var sMonth = this.padValue(newDate.getMonth() + 1);
-          var sDay = this.padValue(newDate.getDate());
+        var self = this
+        self.getWorldTime().then(x => {
+          var newDate = new Date(x);
+            
+          var sMonth = self.padValue(newDate.getMonth() + 1);
+          var sDay = self.padValue(newDate.getDate());
           var sYear = newDate.getFullYear();
           var sHour = newDate.getHours();
-          var sMinute = this.padValue(newDate.getMinutes());
+          var sMinute = self.padValue(newDate.getMinutes());
           var sAMPM = "AM";
 
           var iHourCheck = parseInt(sHour);
 
-          if (iHourCheck > 12) {
+          if (iHourCheck >= 12) {
               sAMPM = "PM";
               sHour = iHourCheck - 12;
           }
@@ -407,9 +414,14 @@
               sHour = "12";
           }
 
-          sHour = this.padValue(sHour);
+          sHour = self.padValue(sHour);
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
 
-          return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
+          self.getOriginalTime = monthNames[newDate.getMonth()] + ' ' + sDay + ' ' + sYear + ' ' + sHour + ":" + sMinute + " " + sAMPM;
+          self.displayDate = sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
+        })
       },
       padValue(value) {
           return (value < 10) ? "0" + value : value;
@@ -420,7 +432,7 @@
         }
         var self = this
         var audio = new Audio(require("../assets/sounds/beep-07.wav"))
-       
+        self.formatDate();
         self.qrResult = result
         self.skeletonLoading = true
         self.loading = true
@@ -428,6 +440,8 @@
           teacherId: result
         }
         await self.getScanQRCode(scanQRCode).then(response => {
+          audio.pause();
+          audio.currentTime = 0;
           audio.play()
           self.showQRCode = false
           self.loading = false
@@ -485,6 +499,11 @@
         setTimeout(() => {
           this.showQRStream = true
         }, 0)
+      },
+      getWorldTime(){
+        return fetch("https://worldtimeapi.org/api/ip")
+        .then(response => response.json())
+        .then(data => { return data.datetime });
       }
     }
   }

@@ -15,7 +15,7 @@ namespace BnhsQrCode.Mappings
             Map(x => x.UserProfileId).Not.Nullable();
             Map(x => x.BodyTemp).Not.Nullable();
             Map(x => x.TimeStatus).Not.Nullable();
-            Map(x => x.CreatedByDateTime).Not.Nullable();
+            Map(x => x.CreatedByDateTime).CustomType("StringClob").CustomSqlType("nvarchar(50)").Not.Nullable();
             Table("QRCodeHistory");
         }
     }

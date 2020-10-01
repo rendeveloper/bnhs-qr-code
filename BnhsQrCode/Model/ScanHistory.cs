@@ -11,6 +11,6 @@ namespace BnhsQrCode.Model
         public virtual int UserProfileId { get; set; }
         public virtual decimal BodyTemp { get; set; }
         public virtual string TimeStatus { get; set; }
-        public virtual DateTime CreatedByDateTime { get; set; }
+        public virtual string CreatedByDateTime { get; set; }
     }
 }

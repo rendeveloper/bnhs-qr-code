@@ -82,6 +82,7 @@ namespace BnhsQrCode.Controllers
                 historyModel.UserProfileId = scanHistory.UserProfileId;
                 historyModel.BodyTemp = scanHistory.BodyTemp;
                 historyModel.TimeStatus = scanHistory.TimeStatus;
+                historyModel.CreatedByDateTime = historyModel.CreatedByDateTime;
 
                 await _scanHistoryService.Save(historyModel);
                 await _scanHistoryService.Commit();
