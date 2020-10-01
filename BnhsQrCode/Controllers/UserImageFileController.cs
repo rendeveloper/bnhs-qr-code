@@ -42,6 +42,8 @@ namespace BnhsQrCode.Controllers
         {
             try
             {
+                if (userImageFile.FileSize == 0 || userImageFile.UserProfileId == 0) return Ok(false);
+
                 _userImageFileService.BeginTransaction();
                 await _userImageFileService.Save(userImageFile);
                 await _userImageFileService.Commit();

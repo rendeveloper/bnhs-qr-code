@@ -1,7 +1,7 @@
 USE [bnhs-qr-code-Database]
 GO
 
-/****** Object:  Table [dbo].[QRCodeHistory]    Script Date: 9/30/2020 2:04:47 AM ******/
+/****** Object:  Table [dbo].[QRCodeHistory]    Script Date: 10/1/2020 8:11:22 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -11,7 +11,7 @@ GO
 CREATE TABLE [dbo].[QRCodeHistory](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[UserProfileId] [int] NOT NULL,
-	[BodyTemp] [int] NOT NULL,
+	[BodyTemp] [decimal](10, 2) NOT NULL,
 	[TimeStatus] [varchar](50) NOT NULL,
 	[CreatedByDateTime] [datetime] NOT NULL,
  CONSTRAINT [PK_QRCodeHistory] PRIMARY KEY CLUSTERED 

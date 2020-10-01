@@ -71,7 +71,9 @@ namespace BnhsQrCode.Services
 
             var imageFile = _session.Query<UserImageFile>()
                 .FirstOrDefault(c => c.FileName.ToLower() == fileName.ToLower());
-            
+
+            if (imageFile == null) return;
+
             await Delete(imageFile);
 
             string basePath = _hostingEnvironment.ContentRootPath + $"{Path.DirectorySeparatorChar}UploadedFiles{Path.DirectorySeparatorChar}" + fileName;

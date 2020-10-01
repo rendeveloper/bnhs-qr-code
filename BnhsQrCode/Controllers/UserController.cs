@@ -113,7 +113,10 @@ namespace BnhsQrCode.Controllers
             {
                 _userService.BeginTransaction();
 
-                await _userImageFileService.DeleteFile(userModel.Image);
+                if (userDto.ImageDTO != null && userDto.ImageDTO.DataBytes.Length != 0)
+                {
+                    await _userImageFileService.DeleteFile(userModel.Image);
+                }
 
                 userModel.TeacherId = userDto.TeacherId.Trim();
                 userModel.FirstName = userDto.FirstName.ToUpper().Trim();
