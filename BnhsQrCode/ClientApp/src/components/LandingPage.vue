@@ -338,6 +338,7 @@
     methods: {
       ...mapActions(['getScanQRCode', 'saveScanHistory']),
       async onSubmit(){
+        this.formatDate()
         if(this.scanHistory.bodyTemp == '' || this.scanHistory.timeStatus == ''){
           this.$message({
             message: "Required fields.",
@@ -347,35 +348,31 @@
         }
 
         var self = this
+        self.loader = 'loading'
         self.scanHistory.userProfileId = self.formData.id
         self.scanHistory.CreatedByDateTime = self.getOriginalTime
         await self.saveScanHistory(self.scanHistory).then(response => {
-          self.loader = 'loading'
           setTimeout(() =>{
             self.showQRStream = true
             self.showQRCode = true
             self.showAlert = true
             setTimeout(() => {
               self.showAlert = false
-              self.formData = {
-                id: 0,
-                teacherId: "",
-                firstName: "",
-                lastName: "",
-                middleName: "",
-                dateOfBirth: "",
-                address: "",
-                healthStatus: "",
-                department: "",
-                role: "",
-                image: require("../assets/image/img_avatar.png")
-              }
-              self.scanHistory = {
-                userProfileId: 0,
-                bodyTemp: "",
-                timeStatus: "",
-                CreatedByDateTime: new Date()
-              }
+              self.formData.id = 0
+              self.formData.teacherId = ""
+              self.formData.firstName = ""
+              self.formData.lastName = ""
+              self.formData.middleName = ""
+              self.formData.dateOfBirth = ""
+              self.formData.address = ""
+              self.formData.healthStatus = ""
+              self.formData.department = ""
+              self.formData.role = ""
+              self.formData.image = require("../assets/image/img_avatar.png")
+              self.scanHistory.userProfileId = 0
+              self.scanHistory.bodyTemp = ""
+              self.scanHistory.timeStatus = ""
+              self.scanHistory.CreatedByDateTime = new Date()
               self.getOriginalTime = ""
               self.displayDate = ""
             }, 500)
@@ -389,8 +386,26 @@
         setTimeout(() => (this.showQRStream = false), 15000)
       },
       onStartQR(){
-        this.loader = 'loading'
-        setTimeout(() => (this.showQRStream = true), 2000)
+        var self = this
+        self.loader = 'loading'
+        self.formData.id = 0
+        self.formData.teacherId = ""
+        self.formData.firstName = ""
+        self.formData.lastName = ""
+        self.formData.middleName = ""
+        self.formData.dateOfBirth = ""
+        self.formData.address = ""
+        self.formData.healthStatus = ""
+        self.formData.department = ""
+        self.formData.role = ""
+        self.formData.image = require("../assets/image/img_avatar.png")
+        self.scanHistory.userProfileId = 0
+        self.scanHistory.bodyTemp = ""
+        self.scanHistory.timeStatus = ""
+        self.scanHistory.CreatedByDateTime = new Date()
+        self.getOriginalTime = ""
+        self.displayDate = ""
+        setTimeout(() => (self.showQRStream = true), 2000)
       },
       formatDate() {
         var self = this
