@@ -63,6 +63,11 @@ const actions = {
     return axios.put(`${state.baseUrl}/api/UserImageFile/${image.id}`, image).then(handleResponse).catch(error => {
       throw new Error(`API ${error}`);
     });
+  },
+  getAllTimeUser({ commit }, id){
+    return axios.get(`${state.baseUrl}/api/ScanHistory/AllTime/${id}`).then(handleResponse).catch(error => {
+      throw new Error(`API ${error}`);
+    });
   }
 };
 
