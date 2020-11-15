@@ -407,35 +407,22 @@
         self.displayDate = ""
         setTimeout(() => (self.showQRStream = true), 2000)
       },
-      formatDate() {
+      async formatDate() {
         var self = this
-        self.getWorldTime().then(x => {
+        await self.getWorldTime().then(x => {
           var newDate = new Date(x);
             
           var sMonth = self.padValue(newDate.getMonth() + 1);
           var sDay = self.padValue(newDate.getDate());
           var sYear = newDate.getFullYear();
-          var sHour = newDate.getHours();
-          var sMinute = self.padValue(newDate.getMinutes());
-          var sAMPM = "AM";
+          var timeAMPM = newDate.toLocaleString([], { hour: '2-digit', minute: '2-digit' });
 
-          var iHourCheck = parseInt(sHour);
-
-          if (iHourCheck >= 12) {
-              sAMPM = "PM";
-              sHour = iHourCheck - 12;
-          }
-          else if (iHourCheck === 0) {
-              sHour = "12";
-          }
-
-          sHour = self.padValue(sHour);
           const monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
           ];
 
-          self.getOriginalTime = monthNames[newDate.getMonth()] + ' ' + sDay + ' ' + sYear + ' ' + sHour + ":" + sMinute + " " + sAMPM;
-          self.displayDate = sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
+          self.getOriginalTime = monthNames[newDate.getMonth()] + ' ' + sDay + ' ' + sYear + ' ' + timeAMPM;
+          self.displayDate = sMonth + "/" + sDay + "/" + sYear + " " + timeAMPM;
         })
       },
       padValue(value) {
@@ -447,7 +434,7 @@
         }
         var self = this
         var audio = new Audio(require("../assets/sounds/beep-07.wav"))
-        self.formatDate();
+        await self.formatDate();
         self.qrResult = result
         self.skeletonLoading = true
         self.loading = true

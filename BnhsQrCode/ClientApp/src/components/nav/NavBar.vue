@@ -47,6 +47,30 @@
           <v-card-title>
             <v-icon class="mr-1">mdi-timetable</v-icon>Daily Time Table
             <v-spacer></v-spacer>
+            <v-menu
+              v-model="menuDate"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  ref="dateOfBirth"
+                >
+                  <v-icon>mdi-calendar</v-icon>
+                </v-btn>
+              </template>
+              <v-date-picker v-model="dateValue" @input="menuDate = false">
+                  <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menuDate = false"><strong>Cancel</strong></v-btn>
+                <v-btn text color="primary" @click="menuDate = false"><strong>OK</strong></v-btn>
+              </v-date-picker>
+            </v-menu>
             <v-text-field
               v-model="searchTime"
               append-icon="mdi-magnify"
@@ -112,6 +136,8 @@
         dialogTime: false,
         timeTblLoading: false,
         searchTime: '',
+        menuDate: false,
+        dateValue: '',
         headersTime: [
           { text: 'Date & Time', value: 'createdByDateTime' },
           { text: 'Status', value: 'timeStatus' },
@@ -124,6 +150,20 @@
       ...mapState({
         drawer: state => state.drawer.isOpen
       })
+    },
+    watch: {
+      dateValue: function(val){
+        if(val !== null && val !== undefined && val !== ""){
+          var self = this
+          var newDate = new Date(val);
+          var sDay = self.padValue(newDate.getDate());
+          var sYear = newDate.getFullYear();
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
+          self.searchTime = monthNames[newDate.getMonth()] + " " + sDay + " " + sYear
+        }
+      }
     }, 
     methods: {
       ...mapActions({
@@ -161,7 +201,18 @@
       getColorTime(timeStatus) {
         if (timeStatus == 'In') return '#4CAF50'
         else return '#FF5252'
+      },
+      padValue(value) {
+          return (value < 10) ? "0" + value : value;
       }
     }
   }
 </script>
+
+<style scoped>
+.v-text-field {
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+}
+</style>
+
