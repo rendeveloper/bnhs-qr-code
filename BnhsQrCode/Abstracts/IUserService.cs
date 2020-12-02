@@ -19,5 +19,6 @@ namespace BnhsQrCode.Abstracts
 
         IQueryable<User> Users { get; }
         bool Upload(ImageDTO imageDto);
+        User Authenticate(string teacherId);
     }
 }

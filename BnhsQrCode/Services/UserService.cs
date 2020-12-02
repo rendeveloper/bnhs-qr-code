@@ -105,5 +105,21 @@ namespace BnhsQrCode.Services
 
             return true;
         }
+
+        public User Authenticate(string teacherId)
+        {
+            if (string.IsNullOrEmpty(teacherId))
+                return null;
+
+
+            var user = _session.Query<User>().FirstOrDefault(c => c.TeacherId.ToLower() == teacherId.ToLower());
+
+            // check if account exists
+            if (user == null)
+                return null;
+
+            // authentication successful
+            return user;
+        }
     }
 }

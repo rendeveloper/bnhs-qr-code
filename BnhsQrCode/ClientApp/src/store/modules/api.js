@@ -2,16 +2,44 @@ import axios from 'axios';
 
 const state = {
   baseUrl: 'http://localhost:57176', /* https://bnhs-joms.cyou */
-  users: []
+  users: [],
+  isLoggedIn: isUserLoggedIn()
 };
 
 const mutations = {
     GET_ALL_USERS(state, users){
       state.users = users;
+    },
+    USER_LOG_IN(state, user){
+      debugger
+      state.isLoggedIn = user
     }
 };
 
 const actions = {
+  login({ commit }, teacherId){
+    debugger
+    return axios.post(`${state.baseUrl}/api/user/authenticate`, teacherId).then(handleResponse)
+        .then(user => {
+          debugger
+            // login successful if there's a user details in the response
+            if (user.data.name) {
+                // store user details in local storage to keep user logged in between page refreshes
+                localStorage.setItem('user', JSON.stringify(user.data));
+                commit('USER_LOG_IN', user.data.active);
+            }
+              debugger
+            return user;
+        });/* .catch(error => {
+          throw new Error(`API ${error}`);
+        }); */
+  },
+  logout({ commit }) {
+    // remove user from local storage to log user out
+    debugger
+    commit('USER_LOG_IN', false);
+    localStorage.removeItem('user');
+  },
   getUser({ commit }, id){
     return axios.get(`${state.baseUrl}/api/user/${id}`).then(handleResponse).catch(error => {
       throw new Error(`API ${error}`);
@@ -70,6 +98,16 @@ const actions = {
     });
   }
 };
+
+function isUserLoggedIn(){
+  let user = JSON.parse(localStorage.getItem('user'));
+  debugger
+  if(user !== null && user.active){
+    return true
+  }else{
+    return false
+  }
+}
 
 function handleResponse(response) {
   if (response.status !== 200) {

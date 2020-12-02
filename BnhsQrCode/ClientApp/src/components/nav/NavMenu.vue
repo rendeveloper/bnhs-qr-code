@@ -11,11 +11,11 @@
       
       <v-list-item>
         <v-list-item-avatar>
-          <v-img src="../../assets/joemy.png"></v-img>
+          <v-img src="../../assets/image/img_avatar.png"></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title><strong>Admin Joemy</strong></v-list-item-title>
+          <v-list-item-title><strong>Admin {{ userName() }}</strong></v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -60,6 +60,17 @@
             </v-list-item-icon>
           </v-list-item>
         </v-list-group>
+
+        
+        <v-list-item link @click="LogoutUser()">
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
   </v-sheet>
@@ -83,7 +94,8 @@
                 icon: 'mdi-account-multiple', 
                 link: '/user/all' 
               },
-              { title: 'Create',
+              { 
+                title: 'Create',
                 icon: 'mdi-plus', 
                 link: '/user/create' 
               }
@@ -91,6 +103,8 @@
           }
         ]
       }
+    },
+    computed: {
     },
     watch: {
     },
@@ -105,6 +119,19 @@
       }
     },
     methods: {
+      ...mapActions(['logout']),
+      userName(){
+        let user = JSON.parse(localStorage.getItem('user'));
+        if(user !== null){
+          return user.name
+        }else{
+          return "";
+        }
+      },
+      LogoutUser(){
+        this.logout()
+        this.$router.push('/login')
+      }
     }
   }
 </script>

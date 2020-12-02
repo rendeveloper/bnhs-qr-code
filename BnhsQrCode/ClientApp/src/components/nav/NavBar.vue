@@ -8,7 +8,7 @@
       <div class="d-flex align-center"
       @click="isPopUp()">
         <v-img
-          alt="Vuetify Logo"
+          alt="bnhs Logo"
           class="shrink mr-2"
           contain
           src="../../assets/bnhs-logo.png"
@@ -23,6 +23,7 @@
       <v-spacer></v-spacer>
       <v-spacer></v-spacer> 
         <v-text-field
+          v-if="isLoggedIn"
           label="Track Your Time, Enter your teacher id"
           single-line
           v-model="teacherId"
@@ -30,6 +31,7 @@
           clearable
         ></v-text-field>
         <v-btn
+          v-if="isLoggedIn"
           text
           @click="getUser()"
         >
@@ -148,7 +150,8 @@
     },
     computed: {
       ...mapState({
-        drawer: state => state.drawer.isOpen
+        drawer: state => state.drawer.isOpen,
+        isLoggedIn: state => state.api.isLoggedIn
       })
     },
     watch: {
@@ -171,7 +174,10 @@
       }),
       ...mapActions(['getScanQRCode', 'getAllTimeUser']),
       isPopUp(){
-        this.openDrawer(!this.drawer)
+        let user = JSON.parse(localStorage.getItem('user'));
+        if(this.isLoggedIn && user !== null && user.admin){
+          this.openDrawer(!this.drawer)
+        }
       },
       async getUser(){
         var self = this
