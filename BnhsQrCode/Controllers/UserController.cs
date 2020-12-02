@@ -84,7 +84,9 @@ namespace BnhsQrCode.Controllers
                     HealthStatus = userDto.HealthStatus.Trim(),
                     Department = userDto.Department.Trim(),
                     Role = userDto.Role.Trim(),
-                    Image = Upload(userDto.ImageDTO) ? userDto.ImageDTO.FileName : ""
+                    Image = Upload(userDto.ImageDTO) ? userDto.ImageDTO.FileName : "",
+                    Admin = userDto.Admin,
+                    Active = userDto.Active
                 };
 
                 await _userService.Save(userModel);
@@ -128,6 +130,8 @@ namespace BnhsQrCode.Controllers
                 userModel.Department = userDto.Department.Trim();
                 userModel.Role = userDto.Role.Trim();
                 userModel.Image = userDto.ImageDTO.DataBytes.Length == 0 ? userModel.Image : Upload(userDto.ImageDTO) ? userDto.ImageDTO.FileName : "";
+                userModel.Admin = userDto.Admin;
+                userModel.Active = userDto.Active;
 
                 await _userService.Save(userModel);
                 await _userService.Commit();
@@ -177,6 +181,30 @@ namespace BnhsQrCode.Controllers
         private bool Upload([FromBody] ImageDTO imageDto)
         {
           return _userService.Upload(imageDto);
+        }
+
+        // POST: api/User/Authenticate
+        [HttpPost]
+        [Route("authenticate")]
+        public IActionResult Authenticate([FromBody] ScanDTO scan)
+        {
+            var user = _userService.Authenticate(scan.TeacherId);
+
+            if (user == null)
+                return BadRequest(new { message = "Couldn't find your account" });
+
+            if (!user.Active)
+                return BadRequest(new { message = "Sorry, your account is inactive and may not login." });
+
+            // return basic user info (without password) and token to store client side
+            return Ok(new
+            {
+                Id = user.Id,
+                Name = user.FirstName,
+                Department = user.Department,
+                Active = user.Active,
+                Admin = user.Admin
+            });
         }
     }
 }

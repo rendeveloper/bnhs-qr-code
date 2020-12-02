@@ -18,5 +18,7 @@ namespace BnhsQrCode.Model
         public virtual string Department { get; set; }
         public virtual string Role { get; set; }
         public virtual string Image { get; set; }
+        public virtual bool Admin { get; set; }
+        public virtual bool Active { get; set; }
     }
 }

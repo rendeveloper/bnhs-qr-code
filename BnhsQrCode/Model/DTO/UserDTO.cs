@@ -8,7 +8,6 @@ namespace BnhsQrCode.Model.DTO
 {
     public class UserDTO
     {
-
         public virtual int Id { get; set; }
         public virtual string TeacherId { get; set; }
         public virtual string FirstName { get; set; }
@@ -20,6 +19,8 @@ namespace BnhsQrCode.Model.DTO
         public virtual string Department { get; set; }
         public virtual string Role { get; set; }
         public virtual string Image { get; set; }
+        public virtual bool Admin { get; set; }
+        public virtual bool Active { get; set; }
         public ImageDTO ImageDTO { get; set; }
     }
 }
